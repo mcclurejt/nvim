@@ -4,6 +4,7 @@ local config = {}
 -- Colorscheme
 -------------------------------------------------------------------------------
 
+---@diagnostic disable-next-line: unused-local, unused-function
 local function get_mode_hl(colors)
   local mode = vim.api.nvim_get_mode().mode
   local mode_to_hl = {
@@ -33,8 +34,10 @@ end
 -- Due to the way different colorschemes configure different highlights group,
 -- there is no universal way to add gui options to all the desired components.
 -- Findout the final highlight group being linked to and update gui option.
+---@diagnostic disable-next-line: unused-function, unused-local
 local function mod_hl(hl_name, opts)
   -- local is_ok, hl_def = pcall(vim.api.nvim_get_hl_by_name, hl_name, true)
+---@diagnostic disable-next-line: undefined-field
   local is_ok, hl_def = pcall(vim.api.nvim_get_hl_by_name, hl_name, true)
   if is_ok then
     for k, v in pairs(opts) do
@@ -49,6 +52,7 @@ function config.catppuccin()
     dim_inactive = {
       enabled = true,
     },
+    term_colors = true,
     integrations = {
       aerial = true,
       alpha = true,
@@ -63,7 +67,9 @@ function config.catppuccin()
       lsp_trouble = true,
       mason = true,
       markdown = true,
-      mini = true,
+      mini = {
+        enabled = true,
+      },
       native_lsp = {
         enabled = true,
         virtual_text = {
@@ -223,6 +229,7 @@ end
 -------------------------------------------------------------------------------
 
 function config.neo_tree()
+---@diagnostic disable-next-line: unused-local
   local highlights = require('neo-tree.ui.highlights')
   require('neo-tree').setup({
     popup_border_style = 'rounded',
@@ -240,6 +247,21 @@ function config.neo_tree()
       },
       indent = {
         with_markers = false,
+      },
+      git_status = {
+        symbols = {
+          -- Change type
+          added = '', -- or "✚", but this is redundant info if you use git_status_colors on the name
+          modified = '', -- or "", but this is redundant info if you use git_status_colors on the name
+          deleted = '', -- this can only be used in the git_status source
+          renamed = '', -- this can only be used in the git_status source
+          -- Status type
+          untracked = '󰛲',
+          ignored = '󰳤',
+          unstaged = '󰿦',
+          staged = '󰋓',
+          conflict = '󰅘',
+        },
       },
     },
     sources = {
@@ -384,6 +406,7 @@ function config.neo_tree()
       },
     },
     event_handlers = {
+      -- hide cursor
       {
         event = 'neo_tree_buffer_enter',
         handler = function()
@@ -396,6 +419,23 @@ function config.neo_tree()
         handler = function()
           -- Make this whatever your current Cursor highlight group is.
           vim.cmd('highlight! Cursor guibg=#5f87af blend=0')
+        end,
+      },
+      -- resize windows on enter/leave
+      {
+        event = 'neo_tree_window_after_open',
+        handler = function(args)
+          if args.position == 'left' or args.position == 'right' then
+            vim.cmd('wincmd =')
+          end
+        end,
+      },
+      {
+        event = 'neo_tree_window_after_close',
+        handler = function(args)
+          if args.position == 'left' or args.position == 'right' then
+            vim.cmd('wincmd =')
+          end
         end,
       },
     },

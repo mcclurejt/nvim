@@ -41,7 +41,7 @@ opt.pumheight = 15
 opt.showcmd = false
 
 opt.cmdheight = 0
-opt.laststatus = 2
+opt.laststatus = 0
 opt.list = true
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
@@ -64,7 +64,7 @@ opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
 
 opt.number = true
-opt.signcolumn = 'auto:3'
+opt.signcolumn = 'yes:2'
 opt.spelloptions = 'camel'
 
 opt.textwidth = 100
@@ -88,3 +88,27 @@ end
 
 -- ui
 opt.winbl = 0
+
+-- diagnostics
+local sign = function(opts)
+  -- See :help sign_define()
+  vim.fn.sign_define(opts.name, {
+    texthl = opts.name,
+    text = opts.text,
+    numhl = '',
+  })
+end
+
+sign({ name = 'DiagnosticSignError', text = '' })
+sign({ name = 'DiagnosticSignWarn', text = '' })
+sign({ name = 'DiagnosticSignInfo', text = '' })
+sign({ name = 'DiagnosticSignHint', text = '' })
+
+vim.diagnostic.config({
+  virtual_text = false,
+  severity_sort = true,
+  float = {
+    border = 'rounded',
+    source = 'always',
+  },
+})

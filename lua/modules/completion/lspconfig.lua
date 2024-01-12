@@ -9,49 +9,31 @@ require('mason').setup({
 -- neodev must be before lspconfig
 require('neodev').setup({})
 
+local lspstatus = require('lsp-status')
+lspstatus.register_progress()
+
 local lspconfig = require('lspconfig')
 
 M.capabilities = vim.tbl_deep_extend(
   'force',
   vim.lsp.protocol.make_client_capabilities(),
-  require('cmp_nvim_lsp').default_capabilities()
+  -- require('cmp_nvim_lsp').default_capabilities()
+  lspstatus.capabilities
 )
 
 function M._attach(client, _)
-  vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
-  client.server_capabilities.semanticTokensProvider = nil
-  local orignal = vim.notify
-  local mynotify = function(msg, level, opts)
-    if msg == 'No code actions available' or msg:find('overly') then
-      return
-    end
-    orignal(msg, level, opts)
-  end
-  vim.notify = mynotify
+  lspstatus.on_attach(client)
+  -- vim.opt.omnifunc = 'v:lua.vim.lsp.omnifunc'
+  -- client.server_capabilities.semanticTokensProvider = nil
+  -- local original = vim.notify
+  -- local mynotify = function(msg, level, opts)
+  --   if msg == 'No code actions available' or msg:find('overly') then
+  --     return
+  --   end
+  --   original(msg, level, opts)
+  -- end
+  -- vim.notify = mynotify
 end
-
-local sign = function(opts)
-  -- See :help sign_define()
-  vim.fn.sign_define(opts.name, {
-    texthl = opts.name,
-    text = opts.text,
-    numhl = '',
-  })
-end
-
-sign({ name = 'DiagnosticSignError', text = '' })
-sign({ name = 'DiagnosticSignWarn', text = '' })
-sign({ name = 'DiagnosticSignHint', text = '' })
-sign({ name = 'DiagnosticSignInfo', text = '' })
-
-vim.diagnostic.config({
-  virtual_text = false,
-  severity_sort = true,
-  float = {
-    border = 'rounded',
-    source = 'always',
-  },
-})
 
 local servers = {
   'bashls',               -- bash
@@ -93,6 +75,7 @@ require('mason-lspconfig').setup({
   handlers = {
     function(server)
       lspconfig[server].setup({
+        -- handlers = lspstatus.extensions[server].setup(),
         on_attach = M._attach,
         capabilities = M.capabilities,
       })

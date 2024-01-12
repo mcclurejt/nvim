@@ -9,6 +9,7 @@ package({
     'williamboman/mason-lspconfig.nvim',
     'lewis6991/gitsigns.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
+    'nvim-lua/lsp-status.nvim'
   },
   config = function()
     require('modules.completion.lspconfig')
@@ -96,6 +97,7 @@ package({
       },
       -- See :help cmp-mapping
       mapping = {
+        ['<c-space>'] = cmp.mapping.complete(),
         ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
         ['<Down>'] = cmp.mapping.select_next_item(select_opts),
 
@@ -128,12 +130,28 @@ package({
     })
 
     cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
+
+    -- -- null-ls
+    -- local null_ls = require('null-ls')
+    -- null_ls.setup({
+    --   sources = {
+    --     null_ls.builtins.completion.spell.with({
+    --       filetypes = { 'markdown', 'text' },
+    --     }),
+    --     null_ls.builtins.formatting.stylua,
+    --     null_ls.builtins.code_actions.gitsigns,
+    --     null_ls.builtins.hover.dictionary,
+    --     null_ls.builtins.hover.printenv,
+    --     null_ls.builtins.formatting.codespell
+    --   },
+    -- })
   end,
   dependencies = {
     { 'hrsh7th/cmp-nvim-lsp' },
     { 'hrsh7th/cmp-path' },
     { 'hrsh7th/cmp-buffer' },
     { 'saadparwaiz1/cmp_luasnip' },
+    -- { 'nvimtools/none-ls.nvim' }
   },
 })
 

@@ -71,28 +71,28 @@ package({
 })
 
 -- Statusline
-package({
-  'freddiehaddad/feline.nvim',
-  dependencies = {
-    'lewis6991/gitsigns.nvim',
-    'kyazdani42/nvim-web-devicons',
-  },
-  config = function()
-    local ctp_feline = require('catppuccin.groups.integrations.feline')
-
-    ctp_feline.setup({})
-
-    require('feline').setup({
-      components = ctp_feline.get(),
-    })
-    -- require('feline').winbar.setup({})
-    require('feline').statuscolumn.setup({})
-    require('feline').use_theme({})
-  end,
-})
+-- package({
+--   'freddiehaddad/feline.nvim',
+--   dependencies = {
+--     'lewis6991/gitsigns.nvim',
+--     'kyazdani42/nvim-web-devicons',
+--   },
+--   config = function()
+--     local ctp_feline = require('catppuccin.groups.integrations.feline')
+--
+--     ctp_feline.setup({})
+--
+--     require('feline').setup({
+--       components = ctp_feline.get(),
+--     })
+--     -- require('feline').winbar.setup({})
+--     require('feline').statuscolumn.setup({})
+--     require('feline').use_theme({})
+--   end,
+-- })
 
 -- Noice
-package( -- lazy.nvim
+package(
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
@@ -157,8 +157,27 @@ package({
   config = function()
     require('mini.files').setup({
       options = {
-        use_as_default_explorer = false
-      }
+        use_as_default_explorer = false,
+      },
     })
   end,
+})
+
+-- Mini.animate
+package({
+  'echasnovski/mini.animate',
+  version = false,
+  config = function()
+    require('mini.animate').setup({})
+  end,
+})
+
+-- Heirline
+package({
+  'rebelot/heirline.nvim',
+  dependencies = {
+    'catppuccin/nvim',
+    'nvim-lua/lsp-status.nvim'
+  },
+  config = require('modules.ui.heirline'),
 })
