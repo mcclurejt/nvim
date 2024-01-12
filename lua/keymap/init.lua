@@ -51,6 +51,7 @@ imap({ '<A-j>', '<esc><cmd>m .+1<cr>==gi', opts(noremap, silent, 'Move Down') })
 imap({ '<A-k>', '<esc><cmd>m .-2<cr>==gi', opts(noremap, silent, 'Move Up') })
 vmap({ '<A-j>', ":m '>+1<cr>gv=gv", opts(noremap, silent, 'Move Down') })
 vmap({ '<A-k>', ":m '>-2<cr>gv=gv", opts(noremap, silent, 'Move Up') })
+
 -------------------------------------------------------------------------------
 -- Windows
 -------------------------------------------------------------------------------
@@ -100,18 +101,18 @@ nmap({
 -------------------------------------------------------------------------------
 
 nmap({
-  { ']d',         cmd('Lspsaga diagnostic_jump_next'),       opts(silent, noremap, 'Next Diagnostic') },
-  { '[d',         cmd('Lspsaga diagnostic_jump_prev'),       opts(silent, noremap, 'Prev Diagnostic') },
-  { 'K',          cmd('Lspsaga hover_doc'),                  opts(silent, noremap, 'Hover Docs') },
-  { 'ga',         cmd('Lspsaga code_action'),                opts(silent, noremap, 'Code Actions') },
-  { 'gd',         cmd('Lspsaga peek_definition'),            opts(silent, noremap, 'Peek Definition') },
-  { 'gp',         cmd('Lspsaga goto_definition'),            opts(silent, noremap, 'Goto Definition') },
-  { 'gr',         cmd('Lspsaga rename'),                     opts(silent, noremap, 'Rename') },
-  { 'gh',         cmd('Lspsaga finder'),                     opts(silent, noremap, 'Finder') },
-  { 'gx',         cmd('Lspsaga show_line_diagnostics'),      opts(silent, noremap, 'Line Diagnostics') },
-  { '<Leader>o',  cmd('Lspsaga outline'),                    opts(silent, noremap, 'Outline') },
+  { ']d', cmd('Lspsaga diagnostic_jump_next'), opts(silent, noremap, 'Next Diagnostic') },
+  { '[d', cmd('Lspsaga diagnostic_jump_prev'), opts(silent, noremap, 'Prev Diagnostic') },
+  { 'K', cmd('Lspsaga hover_doc'), opts(silent, noremap, 'Hover Docs') },
+  { 'ga', cmd('Lspsaga code_action'), opts(silent, noremap, 'Code Actions') },
+  { 'gd', cmd('Lspsaga peek_definition'), opts(silent, noremap, 'Peek Definition') },
+  { 'gp', cmd('Lspsaga goto_definition'), opts(silent, noremap, 'Goto Definition') },
+  { 'gr', cmd('Lspsaga rename'), opts(silent, noremap, 'Rename') },
+  { 'gh', cmd('Lspsaga finder'), opts(silent, noremap, 'Finder') },
+  { 'gx', cmd('Lspsaga show_line_diagnostics'), opts(silent, noremap, 'Line Diagnostics') },
+  { '<Leader>o', cmd('Lspsaga outline'), opts(silent, noremap, 'Outline') },
   { '<Leader>dw', cmd('Lspsaga show_workspace_diagnostics'), opts(silent, noremap, 'Workspace Diagnostics') },
-  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'),       opts(silent, noremap, 'Buffer Diagnostics') },
+  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'), opts(silent, noremap, 'Buffer Diagnostics') },
 })
 xmap({
   'ga',
@@ -139,3 +140,8 @@ tmap({
     opts(silent, noremap),
   },
 })
+
+-------------------------------------------------------------------------------
+-- Lazygit
+-------------------------------------------------------------------------------
+nmap({ '<leader>gg', cmd('LazyGit'), opts(silent, noremap, 'Lazygit') })
