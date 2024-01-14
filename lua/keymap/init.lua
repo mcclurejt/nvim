@@ -20,8 +20,12 @@ nmap({ 'q', '', opts(silent) })
 xmap({ 'q', '', opts(silent) })
 
 -- 'jk' leave insert mode
-imap({ 'jk', '<esc>', opts(noremap, 'Escape') })
-xmap({ 'jk', '<esc>', opts(noremap, 'Escape') })
+imap({ 'jk', '<esc>', opts(noremap, silent, 'Escape') })
+xmap({ 'jk', '<esc>', opts(noremap, silent, 'Escape') })
+
+-- ';w' leave insert mode and save
+imap({ ';w', '<esc><cmd>w<cr>', opts(noremap, silent, 'Write') })
+xmap({ ';w', '<esc><cmd>w<cr>', opts(noremap, silent, 'Write') })
 
 -- ';' commandline
 nmap({ ';', ':', opts(noremap, 'CMD') })
@@ -64,29 +68,15 @@ nmap({ '<leader>v', '<c-w>v', opts(noremap, 'V-Split') })
 -- Files
 -------------------------------------------------------------------------------
 
--- Sidebar Explorer
-nmap({
-  '<leader>e',
-  function()
-    require('neo-tree.command').execute({ toggle = true, dir = vim.loop.cwd(), reveal = true })
-  end,
-  opts(noremap, ' Explorer'),
-})
-nmap({
-  '<c-b>',
-  function()
-    require('neo-tree.command').execute({ toggle = true, dir = vim.loop.cwd(), reveal = true })
-  end,
-  opts(noremap, ' Explorer'),
-})
-
--- Project Drawer
+-- NvimTree
 nmap({
   '-',
-  cmd('lua MiniFiles.open()'),
-  opts(noremap, silent, 'Project Drawer'),
+  function()
+    local api = require('nvim-tree.api')
+    api.tree.toggle({ focus = true })
+  end,
+  opts(noremap, 'NvimTree'),
 })
-
 -------------------------------------------------------------------------------
 -- Buffers
 -------------------------------------------------------------------------------
@@ -108,18 +98,18 @@ nmap({
 -------------------------------------------------------------------------------
 -- imap({ '<c-space>', cmd('lua vim.lsp.buf.omnifunc()'), opts(silent, noremap, 'Auto-Complete') })
 nmap({
-  { ']d',         cmd('Lspsaga diagnostic_jump_next'),       opts(silent, noremap, 'Next Diagnostic') },
-  { '[d',         cmd('Lspsaga diagnostic_jump_prev'),       opts(silent, noremap, 'Prev Diagnostic') },
-  { 'K',          cmd('Lspsaga hover_doc'),                  opts(silent, noremap, 'Hover Docs') },
-  { 'ga',         cmd('Lspsaga code_action'),                opts(silent, noremap, 'Code Actions') },
-  { 'gd',         cmd('Lspsaga peek_definition'),            opts(silent, noremap, 'Peek Definition') },
-  { 'gp',         cmd('Lspsaga goto_definition'),            opts(silent, noremap, 'Goto Definition') },
-  { 'gr',         cmd('Lspsaga rename'),                     opts(silent, noremap, 'Rename') },
-  { 'gh',         cmd('Lspsaga finder'),                     opts(silent, noremap, 'Finder') },
-  { 'gx',         cmd('Lspsaga show_line_diagnostics'),      opts(silent, noremap, 'Line Diagnostics') },
-  { '<Leader>o',  cmd('Lspsaga outline'),                    opts(silent, noremap, 'Outline') },
+  { ']d', cmd('Lspsaga diagnostic_jump_next'), opts(silent, noremap, 'Next Diagnostic') },
+  { '[d', cmd('Lspsaga diagnostic_jump_prev'), opts(silent, noremap, 'Prev Diagnostic') },
+  { 'K', cmd('Lspsaga hover_doc'), opts(silent, noremap, 'Hover Docs') },
+  { 'ga', cmd('Lspsaga code_action'), opts(silent, noremap, 'Code Actions') },
+  { 'gd', cmd('Lspsaga peek_definition'), opts(silent, noremap, 'Peek Definition') },
+  { 'gp', cmd('Lspsaga goto_definition'), opts(silent, noremap, 'Goto Definition') },
+  { 'gr', cmd('Lspsaga rename'), opts(silent, noremap, 'Rename') },
+  { 'gh', cmd('Lspsaga finder'), opts(silent, noremap, 'Finder') },
+  { 'gx', cmd('Lspsaga show_line_diagnostics'), opts(silent, noremap, 'Line Diagnostics') },
+  { '<Leader>o', cmd('Lspsaga outline'), opts(silent, noremap, 'Outline') },
   { '<Leader>dw', cmd('Lspsaga show_workspace_diagnostics'), opts(silent, noremap, 'Workspace Diagnostics') },
-  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'),       opts(silent, noremap, 'Buffer Diagnostics') },
+  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'), opts(silent, noremap, 'Buffer Diagnostics') },
 })
 xmap({
   'ga',
@@ -130,26 +120,9 @@ xmap({
 -------------------------------------------------------------------------------
 -- Term
 -------------------------------------------------------------------------------
+-- normal mode in term
 tmap({ '<esc><esc>', '<c-\\><c-n>', opts(silent, noremap) })
--- nmap({
---   '<c-cr>',
---   cmd('Lspsaga term_toggle'),
---   opts(silent, noremap),
--- })
--- tmap({
---   {
---     '<esc>',
---     [[<c-\><c-n>]],
---     opts(),
---   },
---   {
---     '<c-cr>',
---     cmd('Lspsaga term_toggle'),
---     opts(silent, noremap),
---   },
--- })
-
--------------------------------------------------------------------------------
--- Lazygit
--------------------------------------------------------------------------------
-nmap({ '<leader>gg', cmd('LazyGit'), opts(silent, noremap, 'Lazygit') })
+-- lazygit
+nmap({ '<leader>gg', cmd('Lazygit'), opts(silent, noremap, 'Lazygit') })
+-- lf (file manager)
+-- nmap({ '-', cmd('Lf'), opts(silent, noremap, 'File Drawer') })

@@ -9,7 +9,7 @@ package({
     'williamboman/mason-lspconfig.nvim',
     'lewis6991/gitsigns.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    'nvim-lua/lsp-status.nvim'
+    'nvim-lua/lsp-status.nvim',
   },
   config = function()
     require('modules.completion.lspconfig')
@@ -19,6 +19,9 @@ package({
 package({
   'L3MON4D3/LuaSnip',
   event = 'InsertCharPre',
+  dependencies = {
+    { 'rafamadriz/friendly-snippets' },
+  },
   config = function()
     local ls = require('luasnip')
     local types = require('luasnip.util.types')
@@ -57,60 +60,179 @@ package({
 })
 
 package({
+  'onsails/lspkind.nvim',
+})
+
+local lspkind_icons = {
+  Namespace = '󰌗',
+  Text = '󰉿',
+  Method = '󰆧',
+  Function = '󰆧',
+  Constructor = '',
+  Field = '󰜢',
+  Variable = '󰀫',
+  Class = '󰠱',
+  Interface = '',
+  Module = '',
+  Property = '󰜢',
+  Unit = '󰑭',
+  Value = '󰎠',
+  Enum = '',
+  Keyword = '󰌋',
+  Snippet = '',
+  Color = '󰏘',
+  File = '󰈚',
+  Reference = '󰈇',
+  Folder = '󰉋',
+  EnumMember = '',
+  Constant = '󰏿',
+  Struct = '󰙅',
+  Event = '',
+  Operator = '󰆕',
+  TypeParameter = '󰊄',
+  Table = '',
+  Object = '󰅩',
+  Tag = '',
+  Array = '[]',
+  Boolean = '',
+  Number = '',
+  Null = '󰟢',
+  String = '󰉿',
+  Calendar = '',
+  Watch = '󰥔',
+  Package = '',
+  Copilot = '',
+  Codeium = '',
+  TabNine = '',
+}
+
+package({
   'hrsh7th/nvim-cmp',
   event = 'InsertEnter',
+  dependencies = {
+    { 'hrsh7th/cmp-nvim-lsp' },
+    { 'hrsh7th/cmp-path' },
+    { 'hrsh7th/cmp-buffer' },
+    { 'saadparwaiz1/cmp_luasnip' },
+  },
   config = function()
     local luasnip = require('luasnip')
     local cmp = require('cmp')
     local select_opts = { behavior = cmp.SelectBehavior.Select }
+    local function border(hl_name)
+      return {
+        { '╭', hl_name },
+        { '─', hl_name },
+        { '╮', hl_name },
+        { '│', hl_name },
+        { '╯', hl_name },
+        { '─', hl_name },
+        { '╰', hl_name },
+        { '│', hl_name },
+      }
+    end
 
     cmp.setup({
+      completion = {
+        completeopt = 'menu,menuone',
+      },
       snippet = {
         expand = function(args)
           luasnip.lsp_expand(args.body)
         end,
       },
       sources = {
-        { name = 'luasnip', keyword_length = 2 },
         { name = 'nvim_lsp' },
-        { name = 'buffer',  keyword_length = 3 },
+        { name = 'luasnip' },
+        { name = 'buffer' },
+        { name = 'nvim_lua' },
         { name = 'path' },
       },
       window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
+        completion = {
+          side_padding = 1,
+          -- winhighlight = 'Normal:CmpPmenu,CursorLine:CmpSel,Search:None',
+          scrollbar = false,
+          border = border('CmpBorder'),
+        },
+        documentation = {
+          border = border('CmpDocBorder'),
+          winhighlight = 'Normal:CmpDoc',
+        },
       },
       ---@diagnostic disable-next-line: missing-fields
       formatting = {
-        fields = { 'menu', 'abbr', 'kind' },
+        fields = { 'abbr', 'kind', 'menu' },
         format = function(entry, item)
-          local menu_icon = {
-            nvim_lsp = 'λ',
-            luasnip = '⋗',
-            buffer = 'Ω',
-            path = '🖫',
-          }
-
-          item.menu = menu_icon[entry.source.name]
+          local icon = lspkind_icons[item.kind] or ''
+          icon = ' ' .. icon .. ' '
+          item.menu = require('lspkind').cmp_format({ mode = 'symbol_text', maxwidth = 50 })(entry, item)
+              and '   (' .. item.kind .. ')'
+              or ''
+          item.kind = icon
           return item
         end,
       },
       -- See :help cmp-mapping
       mapping = {
+        -- fire it up
         ['<c-space>'] = cmp.mapping.complete(),
+
+        -- for the normies
         ['<Up>'] = cmp.mapping.select_prev_item(select_opts),
         ['<Down>'] = cmp.mapping.select_next_item(select_opts),
 
-        ['<C-p>'] = cmp.mapping.select_prev_item(select_opts),
-        ['<C-n>'] = cmp.mapping.select_next_item(select_opts),
+        -- for the hardos
+        ['<C-k>'] = cmp.mapping({
+          i = function(fallback)
+            if cmp.visible() then
+              return cmp.select_prev_item(select_opts)
+            end
 
-        ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-d>'] = cmp.mapping.scroll_docs(4),
+            fallback()
+          end,
+        }),
+        ['<C-j>'] = cmp.mapping({
+          i = function(fallback)
+            if cmp.visible() then
+              return cmp.select_next_item(select_opts)
+            end
 
-        ['<C-e>'] = cmp.mapping.abort(),
+            fallback()
+          end,
+        }),
+
+        -- scrolling docs
+        ['<C-u>'] = cmp.mapping({
+          c = function(fallback)
+            if cmp.visible() then
+              return cmp.scroll_docs(-4)
+            end
+
+            fallback()
+          end,
+        }),
+        ['<C-d>'] = cmp.mapping({
+          c = function(fallback)
+            if cmp.visible() then
+              return cmp.scroll_docs(4)
+            end
+
+            fallback()
+          end,
+        }),
+
+        -- hide it if it's irritating
         ['<C-c>'] = cmp.mapping.abort(),
-        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-        ['<CR>'] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false }),
+        ['<ESC>'] = cmp.mapping({
+          i = function(fallback)
+            if cmp.visible() then
+              return cmp.abort()
+            end
+            fallback()
+          end,
+        }),
+        ['<CR>'] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true }),
 
         ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -128,7 +250,6 @@ package({
         end, { 'i', 's' }),
       },
     })
-
     cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
 
     -- -- null-ls
@@ -146,13 +267,6 @@ package({
     --   },
     -- })
   end,
-  dependencies = {
-    { 'hrsh7th/cmp-nvim-lsp' },
-    { 'hrsh7th/cmp-path' },
-    { 'hrsh7th/cmp-buffer' },
-    { 'saadparwaiz1/cmp_luasnip' },
-    -- { 'nvimtools/none-ls.nvim' }
-  },
 })
 
 package({

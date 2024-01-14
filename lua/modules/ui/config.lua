@@ -37,7 +37,7 @@ end
 ---@diagnostic disable-next-line: unused-function, unused-local
 local function mod_hl(hl_name, opts)
   -- local is_ok, hl_def = pcall(vim.api.nvim_get_hl_by_name, hl_name, true)
----@diagnostic disable-next-line: undefined-field
+  ---@diagnostic disable-next-line: undefined-field
   local is_ok, hl_def = pcall(vim.api.nvim_get_hl_by_name, hl_name, true)
   if is_ok then
     for k, v in pairs(opts) do
@@ -73,16 +73,16 @@ function config.catppuccin()
       native_lsp = {
         enabled = true,
         virtual_text = {
-          errors = { 'italic' },
-          hints = { 'italic' },
-          warnings = { 'italic' },
-          information = { 'italic' },
+          errors = {},
+          hints = {},
+          warnings = {},
+          information = {},
         },
         underlines = {
-          errors = { 'underline' },
-          hints = { 'underline' },
-          warnings = { 'underline' },
-          information = { 'underline' },
+          errors = { 'undercurl' },
+          hints = { 'undercurl' },
+          warnings = { 'undercurl' },
+          information = { 'undercurl' },
         },
         inlay_hints = {
           background = true,
@@ -103,42 +103,42 @@ function config.catppuccin()
     custom_highlights = function(colors)
       return {
         -- NeoTree
-        NeoTreeTabActive = {
-          fg = colors.blue,
-          bg = colors.base,
-        },
-        NeoTreeTabInactive = {
-          bg = colors.base,
-        },
+        -- NeoTreeTabActive = {
+        --   fg = colors.blue,
+        --   bg = colors.base,
+        -- },
+        -- NeoTreeTabInactive = {
+        --   bg = colors.base,
+        -- },
         NeoTreeNormal = {
           bg = colors.base,
         },
         NeoTreeNormalNC = {
-          bg = colors.base,
+          bg = colors.mantle,
         },
-        NeoTreeFloatBorder = {
-          fg = colors.blue,
-          bg = colors.base,
-        },
-        NeoTreeFloatTitle = {
-          fg = colors.blue,
-          bg = colors.base,
-        },
-        NeoTreeTabSeparatorActive = {
-          fg = colors.base,
-          bg = colors.base,
-        },
-        NeoTreeTabSeparatorInactive = {
-          fg = colors.base,
-          bg = colors.base,
-        },
+        -- NeoTreeFloatBorder = {
+        --   fg = colors.blue,
+        --   bg = colors.base,
+        -- },
+        -- NeoTreeFloatTitle = {
+        --   fg = colors.blue,
+        --   bg = colors.base,
+        -- },
+        -- NeoTreeTabSeparatorActive = {
+        --   fg = colors.base,
+        --   bg = colors.base,
+        -- },
+        -- NeoTreeTabSeparatorInactive = {
+        --   fg = colors.base,
+        --   bg = colors.base,
+        -- },
 
         -- Noice Cmdline
         NoiceCmdlinePopupTitle = {
-          fg = colors.blue,
+          fg = colors.text,
         },
         NoiceCmdlineIcon = {
-          fg = colors.blue,
+          fg = colors.peach,
         },
         NoiceCmdlinePopupBorder = {
           fg = colors.peach,
@@ -146,10 +146,10 @@ function config.catppuccin()
 
         -- Noice Search
         NoiceCmdlineIconSearch = {
-          fg = colors.blue,
+          fg = colors.mauve,
         },
         NoiceCmdlinePopupBorderSearch = {
-          fg = colors.yellow,
+          fg = colors.mauve,
         },
       }
     end,
@@ -174,10 +174,6 @@ end
 function config.indent_blankline()
   local p = require('catppuccin.palettes').get_palette('mocha')
   local hooks = require('ibl.hooks')
-  -- local highlight = {
-  --   "CursorColumn",
-  --   "Whitespace",
-  -- }
   local highlight = {
     'RainbowRed',
     'RainbowYellow',
@@ -201,8 +197,10 @@ function config.indent_blankline()
 
   vim.g.rainbow_delimiters = { highlight = highlight }
   require('ibl').setup({
-    indent = { char = '┊' },
-    scope = { highlight = highlight },
+    -- indent = { char = '┊' },
+    -- scope = { highlight = highlight },
+    scope = { enabled = false },
+    indent = { char = '┊', highlight = highlight },
     exclude = {
       filetypes = {
         'help',
@@ -229,7 +227,7 @@ end
 -------------------------------------------------------------------------------
 
 function config.neo_tree()
----@diagnostic disable-next-line: unused-local
+  ---@diagnostic disable-next-line: unused-local
   local highlights = require('neo-tree.ui.highlights')
   require('neo-tree').setup({
     popup_border_style = 'rounded',

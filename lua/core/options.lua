@@ -41,7 +41,7 @@ opt.pumheight = 15
 opt.showcmd = false
 
 opt.cmdheight = 0
-opt.laststatus = 0
+opt.laststatus = 2
 opt.list = true
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
@@ -64,7 +64,7 @@ opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
 
 opt.number = true
-opt.signcolumn = 'yes:2'
+-- opt.signcolumn = 'yes:2'
 opt.spelloptions = 'camel'
 
 opt.textwidth = 100
@@ -112,3 +112,69 @@ vim.diagnostic.config({
     source = 'always',
   },
 })
+
+vim.opt.conceallevel = 0
+
+-- fix nvim-tree restore from session
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'NvimTree' },
+  callback = function(args)
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+      callback = function()
+        vim.api.nvim_buf_delete(args.buf, { force = true })
+        return true
+      end,
+    })
+  end,
+})
+-- vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+--   pattern = 'NvimTree*',
+--   callback = function()
+--     local view = require('nvim-tree.view')
+--     local is_visible = view.is_visible()
+
+--     local api = require('nvim-tree.api')
+--     if not is_visible then
+--       api.tree.open()
+--     end
+--   end,
+-- })
+
+-- automatically resize the nvimtree when neovim's window size changes
+local tree_api = require("nvim-tree")
+local tree_view = require("nvim-tree.view")
+
+vim.api.nvim_create_augroup("NvimTreeResize", {
+  clear = true,
+})
+
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+  group = "NvimTreeResize",
+  callback = function()
+    if tree_view.is_visible() then
+      tree_view.close()
+      tree_api.open()
+    end
+  end
+})
+
+-- -- go to last used hidden buffer when deleting a buffer
+-- vim.api.nvim_create_autocmd('BufEnter', {
+--   nested = true,
+--   callback = function()
+--     local api = require('nvim-tree.api')
+--
+--     -- Only 1 window with nvim-tree left: we probably closed a file buffer
+--     if #vim.api.nvim_list_wins() == 1 and api.tree.is_tree_buf() then
+--       -- Required to let the close event complete. An error is thrown without this.
+--       vim.defer_fn(function()
+--         -- close nvim-tree: will go to the last hidden buffer used before closing
+--         api.tree.toggle({ find_file = true, focus = true })
+--         -- re-open nivm-tree
+--         api.tree.toggle({ find_file = true, focus = true })
+--         -- nvim-tree is still the active window. Go to the previous window.
+--         vim.cmd('wincmd p')
+--       end, 0)
+--     end
+--   end,
+-- })

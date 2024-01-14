@@ -36,31 +36,31 @@ function M._attach(client, _)
 end
 
 local servers = {
-  'bashls',               -- bash
-  'bufls',                -- protobuf
-  'clangd',               -- c/c++
+  'bashls', -- bash
+  'bufls', -- protobuf
+  'clangd', -- c/c++
   -- 'denols', -- deno
-  'dockerls',             -- docker
+  'dockerls', -- docker
   -- 'eslint', -- ts/js linting
-  'gopls',                -- golang
-  'jsonls',               -- json
+  'gopls', -- golang
+  'jsonls', -- json
   -- 'biome', -- ts/js
-  'jqls',                 -- jq
-  'lua_ls',               -- lua
-  'marksman',             -- markdown
-  'prettierd',            -- ts/js formatting
-  'rust_analyzer',        -- rust
-  'spectral',             -- openapi
+  'jqls', -- jq
+  'lua_ls', -- lua
+  'marksman', -- markdown
+  'prettierd', -- ts/js formatting
+  'rust_analyzer', -- rust
+  'spectral', -- openapi
   'jedi_language_server', -- python
-  'shfmt',                -- shell
-  'sqlls',                -- sql
-  'solc',                 -- solidity
-  'solidity',             -- solidity
-  'stylua',               -- lua
-  'taplo',                -- toml
-  'terraformls',          -- terraform
-  'tsserver',             -- typescript
-  'yamlls',               -- yaml
+  'shfmt', -- shell
+  'sqlls', -- sql
+  'solc', -- solidity
+  'solidity', -- solidity
+  'stylua', -- lua
+  'taplo', -- toml
+  'terraformls', -- terraform
+  'tsserver', -- typescript
+  'yamlls', -- yaml
 }
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
@@ -69,6 +69,15 @@ vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
   vim.diagnostic.reset(ns, bufnr)
   return true
 end
+
+-- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+--   border = "single",
+-- })
+-- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+--   border = "single",
+--   focusable = false,
+--   relative = "cursor",
+-- })
 
 require('mason-lspconfig').setup({
   ensure_installed = servers,

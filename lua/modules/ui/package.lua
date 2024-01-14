@@ -25,8 +25,8 @@ package({
       signs = {
         add = { text = '▎' },
         change = { text = '▎' },
-        delete = { text = '➤' },
-        topdelete = { text = '➤' },
+        delete = { text = '▎' },
+        topdelete = { text = '▎' },
         changedelete = { text = '▎' },
       },
     })
@@ -34,41 +34,41 @@ package({
 })
 
 -- NeoTree
-package({
-  'nvim-neo-tree/neo-tree.nvim',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-tree/nvim-web-devicons',          -- not strictly required, but recommended
-    'MunifTanjim/nui.nvim',
-    '3rd/image.nvim',                       -- Optional image support in preview window: See `# Preview Mode` for more information
-    'mrbjarksen/neo-tree-diagnostics.nvim', -- diagnostics view support
-  },
-  deactivate = function()
-    vim.cmd([[Neotree close]])
-  end,
-  init = function()
-    if vim.fn.argc(-1) == 1 then
-      ---@diagnostic disable-next-line: param-type-mismatch
-      local stat = vim.loop.fs_stat(vim.fn.argv(0))
-      if stat and stat.type == 'directory' then
-        require('neo-tree')
-      end
-    end
-  end,
-  config = conf.neo_tree,
-})
-package({
-  {
-    'antosha417/nvim-lsp-file-operations',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-neo-tree/neo-tree.nvim',
-    },
-    config = function()
-      require('lsp-file-operations').setup()
-    end,
-  },
-})
+-- package({
+--   'nvim-neo-tree/neo-tree.nvim',
+--   dependencies = {
+--     'nvim-lua/plenary.nvim',
+--     'nvim-tree/nvim-web-devicons',          -- not strictly required, but recommended
+--     'MunifTanjim/nui.nvim',
+--     '3rd/image.nvim',                       -- Optional image support in preview window: See `# Preview Mode` for more information
+--     'mrbjarksen/neo-tree-diagnostics.nvim', -- diagnostics view support
+--   },
+--   deactivate = function()
+--     vim.cmd([[Neotree close]])
+--   end,
+--   init = function()
+--     if vim.fn.argc(-1) == 1 then
+--       ---@diagnostic disable-next-line: param-type-mismatch
+--       local stat = vim.loop.fs_stat(vim.fn.argv(0))
+--       if stat and stat.type == 'directory' then
+--         require('neo-tree')
+--       end
+--     end
+--   end,
+--   config = conf.neo_tree,
+-- })
+-- package({
+--   {
+--     'antosha417/nvim-lsp-file-operations',
+--     dependencies = {
+--       'nvim-lua/plenary.nvim',
+--       'nvim-neo-tree/neo-tree.nvim',
+--     },
+--     config = function()
+--       require('lsp-file-operations').setup()
+--     end,
+--   },
+-- })
 
 -- Statusline
 -- package({
@@ -92,62 +92,61 @@ package({
 -- })
 
 -- Noice
-package(
-  {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      'MunifTanjim/nui.nvim',
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      'rcarriga/nvim-notify',
-    },
+package({
+  'folke/noice.nvim',
+  event = 'VeryLazy',
+  dependencies = {
+    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+    'MunifTanjim/nui.nvim',
+    -- OPTIONAL:
+    --   `nvim-notify` is only needed, if you want to use the notification view.
+    --   If not available, we use `mini` as the fallback
+    -- 'rcarriga/nvim-notify',
+  },
 
-    config = function()
-      require('noice').setup({
-        lsp = {
-          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-          override = {
-            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-            ['vim.lsp.util.stylize_markdown'] = true,
-            ['cmp.entry.get_documentation'] = true,
-          },
-          progress = {
-            enabled = false,
-          },
+  config = function()
+    require('noice').setup({
+      lsp = {
+        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        override = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+          ['cmp.entry.get_documentation'] = true,
         },
-        -- you can enable a preset for easier configuration
-        presets = {
-          bottom_search = false,        -- use a classic bottom cmdline for search
-          command_palette = true,       -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false,       -- add a border to hover docs and signature help
-        },
-        notify = {
+        progress = {
           enabled = false,
         },
-        message = {
-          enabled = false,
-        },
-      })
-    end,
-  }
-)
+      },
+      -- you can enable a preset for easier configuration
+      presets = {
+        bottom_search = false, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false, -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = false, -- add a border to hover docs and signature help
+      },
+      notify = {
+        enabled = false,
+      },
+      message = {
+        enabled = false,
+      },
+    })
+  end,
+})
 
 -- Fidget
 package({
   'j-hui/fidget.nvim',
   config = function()
-    require('fidget').setup({})
+    require('fidget').setup({
+      integration = {
+        ['nvim-tree'] = {
+          enable = true, -- Integrate with nvim-tree/nvim-tree.lua (if installed)
+        },
+      },
+    })
   end,
-})
-
--- Lazygit
-package({
-  'kdheepak/lazygit.nvim',
 })
 
 -- Mini.files
@@ -164,20 +163,74 @@ package({
 })
 
 -- Mini.animate
-package({
-  'echasnovski/mini.animate',
-  version = false,
-  config = function()
-    require('mini.animate').setup({})
-  end,
-})
+-- package({
+--   'echasnovski/mini.animate',
+--   version = false,
+--   config = function()
+--     require('mini.animate').setup({})
+--   end,
+-- })
 
 -- Heirline
 package({
   'rebelot/heirline.nvim',
   dependencies = {
     'catppuccin/nvim',
-    'nvim-lua/lsp-status.nvim'
+    'nvim-lua/lsp-status.nvim',
   },
   config = require('modules.ui.heirline'),
+})
+
+-- Mini.clue
+package({
+  'echasnovski/mini.clue',
+  version = false,
+  config = function()
+    local miniclue = require('mini.clue')
+    miniclue.setup({
+      {
+        triggers = {
+          -- Leader triggers
+          { mode = 'n', keys = '<Leader>' },
+          { mode = 'x', keys = '<Leader>' },
+
+          -- Built-in completion
+          { mode = 'i', keys = '<C-x>' },
+
+          -- `g` key
+          { mode = 'n', keys = 'g' },
+          { mode = 'x', keys = 'g' },
+
+          -- Marks
+          { mode = 'n', keys = "'" },
+          { mode = 'n', keys = '`' },
+          { mode = 'x', keys = "'" },
+          { mode = 'x', keys = '`' },
+
+          -- Registers
+          { mode = 'n', keys = '"' },
+          { mode = 'x', keys = '"' },
+          { mode = 'i', keys = '<C-r>' },
+          { mode = 'c', keys = '<C-r>' },
+
+          -- Window commands
+          { mode = 'n', keys = '<C-w>' },
+
+          -- `z` key
+          { mode = 'n', keys = 'z' },
+          { mode = 'x', keys = 'z' },
+        },
+
+        clues = {
+          -- Enhance this by adding descriptions for <Leader> mapping groups
+          miniclue.gen_clues.builtin_completion(),
+          miniclue.gen_clues.g(),
+          miniclue.gen_clues.marks(),
+          miniclue.gen_clues.registers(),
+          miniclue.gen_clues.windows(),
+          miniclue.gen_clues.z(),
+        },
+      },
+    })
+  end,
 })

@@ -46,6 +46,7 @@ g.loaded_netrwPlugin = 1
 g.loaded_netrwSettings = 1
 g.loaded_netrwFileHandlers = 1
 
-require('core.options')
+require('core.diagnostics')
 require('core.pack'):boot_strap()
+require('core.options')
 require('keymap')

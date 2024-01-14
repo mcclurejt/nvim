@@ -1,17 +1,6 @@
 local package = require('core.pack').package
 local conf = require('modules.tools.config')
 
--- Which-Key
-package({
-  'folke/which-key.nvim',
-  event = 'VeryLazy',
-  init = function()
-    vim.o.timeout = true
-    vim.o.timeoutlen = 300
-  end,
-  opts = {},
-})
-
 -- TermToggle
 package({
   'akinsho/toggleterm.nvim',
@@ -43,3 +32,6 @@ package({
     { '<C-CR>', mode = { 'n', 'i', 't' }, '<cmd>ToggleTerm<cr>', desc = 'Toggle Terminal' },
   },
 })
+
+-- fm-nvim (term-based programs)
+package({ 'is0n/fm-nvim', config = conf.fm })

@@ -214,3 +214,27 @@ package({
     require('mini.ai').setup({})
   end,
 })
+
+-- NvimTree
+package({
+  'nvim-tree/nvim-tree.lua',
+  dependencies = {
+    {
+      'yamatsum/nvim-nonicons',
+      dependencies = { 'kyazdani42/nvim-web-devicons' },
+    },
+  },
+  config = require('modules.editor.nvimtree').setup,
+})
+package({
+  {
+    'antosha417/nvim-lsp-file-operations',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-tree.lua',
+    },
+    config = function()
+      require('lsp-file-operations').setup()
+    end,
+  },
+})

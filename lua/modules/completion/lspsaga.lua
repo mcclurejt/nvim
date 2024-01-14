@@ -10,6 +10,7 @@ return function()
       code_action = '💡',
       actionfix = ' ',
       lines = { '┗', '┣', '┃', '━', '┏' },
+      -- kind = require('catppuccin.groups.integrations.lsp_saga').custom_kind(),
       kind = nil,
       imp_sign = '󰳛 ',
     },
@@ -124,13 +125,13 @@ return function()
     outline = {
       win_position = 'right',
       win_width = 30,
-      auto_preview = true,
-      detail = true,
+      auto_enter = true,
       auto_close = true,
-      close_after_jump = true,
-      layout = 'normal',
-      max_height = 0.5,
-      left_width = 0.3,
+      auto_preview = false,
+      virt_text = '┃',
+      jump_key = '<enter>',
+      -- auto refresh when change buffer
+      auto_refresh = true,
       keys = {
         toggle_or_jump = { 'l', '<cr>' },
         quit = 'q',
