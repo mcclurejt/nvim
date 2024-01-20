@@ -1,3 +1,5 @@
+-- TODO: move filename, filetype, diagnostics to winbar
+-- TODO: disable statusline on inactive windows
 return function()
   local nonicons_icons = require('nvim-nonicons')
 
@@ -152,7 +154,7 @@ return function()
       if not conditions.is_active() then
         return { fg = 'bright_fg', force = true }
       end
-      return { fg = 'fg' }
+      return { fg = 'fg', italic = true }
     end,
 
     flexible = 2,
@@ -211,7 +213,7 @@ return function()
     hl = function()
       if vim.bo.modified and conditions.is_active() then
         -- use `force` because we need to override the child's hl foreground
-        return { fg = 'orange', bold = true, force = true }
+        return { fg = 'orange', bold = true, italic = false, force = true }
       end
     end,
   }
@@ -222,7 +224,7 @@ return function()
     -- FileIcon,
     utils.insert(FileNameModifer, FileName), -- a new table where FileName is a child of FileNameModifier
     -- FileFlags,
-    { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
+    { provider = '%<' }                      -- this means that the statusline is cut here when there's not enough space
   )
 
   local FileType = {
@@ -624,9 +626,11 @@ return function()
     Git,
     Space,
     GitStatus,
+    Space,
     Align,
     FileNameBlock,
     Align,
+    Space,
     Diagnostics,
     Space,
     FileType,

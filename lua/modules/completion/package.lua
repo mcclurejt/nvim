@@ -301,3 +301,5 @@ package({
     })
   end,
 })
+
+-- TODO: Fix tsserver crashes

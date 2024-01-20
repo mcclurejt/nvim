@@ -62,8 +62,8 @@ end
 
 -- plugin setup
 function M.setup()
-  local WIDTH_RATIO = 0.8
-  local HEIGHT_RATIO = 0.5
+  local WIDTH_RATIO = 0.5
+  local HEIGHT_RATIO = 0.8
 
   local nonicons_extension = require('nvim-nonicons.extentions.nvim-tree')
 
@@ -122,7 +122,7 @@ function M.setup()
       },
     },
     renderer = {
-      root_folder_label = false,
+      root_folder_label = true,
       highlight_git = true,
       highlight_opened_files = 'none',
 

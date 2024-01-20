@@ -64,7 +64,7 @@ opt.foldlevelstart = 99
 opt.foldmethod = 'marker'
 
 opt.number = true
--- opt.signcolumn = 'yes:2'
+-- opt.signcolumn = 'yes:1'
 opt.spelloptions = 'camel'
 
 opt.textwidth = 100
@@ -88,32 +88,6 @@ end
 
 -- ui
 opt.winbl = 0
-
--- diagnostics
-local sign = function(opts)
-  -- See :help sign_define()
-  vim.fn.sign_define(opts.name, {
-    texthl = opts.name,
-    text = opts.text,
-    numhl = '',
-  })
-end
-
-sign({ name = 'DiagnosticSignError', text = '' })
-sign({ name = 'DiagnosticSignWarn', text = '' })
-sign({ name = 'DiagnosticSignInfo', text = '' })
-sign({ name = 'DiagnosticSignHint', text = '' })
-
-vim.diagnostic.config({
-  virtual_text = false,
-  severity_sort = true,
-  float = {
-    border = 'rounded',
-    source = 'always',
-  },
-})
-
-vim.opt.conceallevel = 0
 
 -- fix nvim-tree restore from session
 vim.api.nvim_create_autocmd('FileType', {
@@ -141,21 +115,21 @@ vim.api.nvim_create_autocmd('FileType', {
 -- })
 
 -- automatically resize the nvimtree when neovim's window size changes
-local tree_api = require("nvim-tree")
-local tree_view = require("nvim-tree.view")
+local tree_api = require('nvim-tree')
+local tree_view = require('nvim-tree.view')
 
-vim.api.nvim_create_augroup("NvimTreeResize", {
+vim.api.nvim_create_augroup('NvimTreeResize', {
   clear = true,
 })
 
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = "NvimTreeResize",
+vim.api.nvim_create_autocmd({ 'VimResized' }, {
+  group = 'NvimTreeResize',
   callback = function()
     if tree_view.is_visible() then
       tree_view.close()
       tree_api.open()
     end
-  end
+  end,
 })
 
 -- -- go to last used hidden buffer when deleting a buffer

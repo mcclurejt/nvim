@@ -234,3 +234,44 @@ package({
     })
   end,
 })
+
+-- Telescope
+package({
+  'nvim-telescope/telescope.nvim',
+  dependencies = {
+    'nvim-treesitter/nvim-treesitter',
+    { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+  },
+  cmd = 'Telescope',
+  -- init = function()
+  --   require("core.utils").load_mappings "telescope"
+  -- end,
+  -- opts = function()
+  --   return require "plugins.configs.telescope"
+  -- end,
+  config = require('modules.ui.telescope').setup,
+})
+
+-- StatusColumn
+package({
+  'luukvbaal/statuscol.nvim',
+  config = function()
+    -- local builtin = require("statuscol.builtin")
+    require('statuscol').setup({
+      -- configuration goes here, for example:
+      -- relculright = true,
+      -- segments = {
+      --   { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+      -- {
+      --   sign = { name = { "Diagnostic" }, maxwidth = 2, auto = true },
+      --   click = "v:lua.ScSa"
+      -- },
+      --   { text = { builtin.lnumfunc }, click = "v:lua.ScLa", },
+      --   {
+      --     sign = { name = { ".*" }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
+      --     click = "v:lua.ScSa"
+      --   },
+      -- }
+    })
+  end,
+})

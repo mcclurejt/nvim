@@ -110,12 +110,12 @@ function config.catppuccin()
         -- NeoTreeTabInactive = {
         --   bg = colors.base,
         -- },
-        NeoTreeNormal = {
-          bg = colors.base,
-        },
-        NeoTreeNormalNC = {
-          bg = colors.mantle,
-        },
+        -- NeoTreeNormal = {
+        --   bg = colors.base,
+        -- },
+        -- NeoTreeNormalNC = {
+        --   bg = colors.mantle,
+        -- },
         -- NeoTreeFloatBorder = {
         --   fg = colors.blue,
         --   bg = colors.base,
@@ -132,6 +132,11 @@ function config.catppuccin()
         --   fg = colors.base,
         --   bg = colors.base,
         -- },
+
+        -- Enhance float titles
+        FloatTitle = {
+          fg = colors.text,
+        },
 
         -- Noice Cmdline
         NoiceCmdlinePopupTitle = {

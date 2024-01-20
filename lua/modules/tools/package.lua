@@ -35,3 +35,28 @@ package({
 
 -- fm-nvim (term-based programs)
 package({ 'is0n/fm-nvim', config = conf.fm })
+
+-- neogit
+package({
+  'NeogitOrg/neogit',
+  dependencies = {
+    'nvim-lua/plenary.nvim', -- required
+    {
+      'sindrets/diffview.nvim',
+      cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+    }, -- optional - Diff integration
+    'nvim-telescope/telescope.nvim',
+  },
+  config = function()
+    require('neogit').setup({
+      integrations = {
+        telescope = true,
+        diffview = true,
+      },
+    })
+  end,
+})
+
+-- TODO: try tinygit
+-- TODO: folke todos
+-- TODO: trouble
