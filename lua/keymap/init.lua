@@ -61,8 +61,8 @@ vmap({ '<A-k>', ":m '>-2<cr>gv=gv", opts(noremap, silent, 'Move Up') })
 -------------------------------------------------------------------------------
 
 -- x/v splits
-nmap({ '<leader>x', '<c-w>s', opts(noremap, 'H-Split') })
-nmap({ '<leader>v', '<c-w>v', opts(noremap, 'V-Split') })
+-- nmap({ '<leader>x', '<c-w>s', opts(noremap, 'H-Split') })
+-- nmap({ '<leader>v', '<c-w>v', opts(noremap, 'V-Split') })
 
 -------------------------------------------------------------------------------
 -- Files
@@ -92,18 +92,18 @@ nmap({
 -------------------------------------------------------------------------------
 -- imap({ '<c-space>', cmd('lua vim.lsp.buf.omnifunc()'), opts(silent, noremap, 'Auto-Complete') })
 nmap({
-  { ']d',         cmd('Lspsaga diagnostic_jump_next'),       opts(silent, noremap, 'Next Diagnostic') },
-  { '[d',         cmd('Lspsaga diagnostic_jump_prev'),       opts(silent, noremap, 'Prev Diagnostic') },
-  { 'K',          cmd('Lspsaga hover_doc'),                  opts(silent, noremap, 'Hover Docs') },
-  { 'ga',         cmd('Lspsaga code_action'),                opts(silent, noremap, 'Code Actions') },
-  { 'gd',         cmd('Lspsaga peek_definition'),            opts(silent, noremap, 'Peek Definition') },
-  { 'gp',         cmd('Lspsaga goto_definition'),            opts(silent, noremap, 'Goto Definition') },
-  { 'gr',         cmd('Lspsaga rename'),                     opts(silent, noremap, 'Rename') },
-  { 'gh',         cmd('Lspsaga finder'),                     opts(silent, noremap, 'Finder') },
-  { 'gx',         cmd('Lspsaga show_line_diagnostics'),      opts(silent, noremap, 'Line Diagnostics') },
-  { '<Leader>o',  cmd('Lspsaga outline'),                    opts(silent, noremap, 'Outline') },
+  { ']d', cmd('Lspsaga diagnostic_jump_next'), opts(silent, noremap, 'Next Diagnostic') },
+  { '[d', cmd('Lspsaga diagnostic_jump_prev'), opts(silent, noremap, 'Prev Diagnostic') },
+  { 'K', cmd('Lspsaga hover_doc'), opts(silent, noremap, 'Hover Docs') },
+  { 'ga', cmd('Lspsaga code_action'), opts(silent, noremap, 'Code Actions') },
+  { 'gd', cmd('Lspsaga peek_definition'), opts(silent, noremap, 'Peek Definition') },
+  { 'gp', cmd('Lspsaga goto_definition'), opts(silent, noremap, 'Goto Definition') },
+  { 'gr', cmd('Lspsaga rename'), opts(silent, noremap, 'Rename') },
+  { 'gh', cmd('Lspsaga finder'), opts(silent, noremap, 'Finder') },
+  { 'gx', cmd('Lspsaga show_line_diagnostics'), opts(silent, noremap, 'Line Diagnostics') },
+  { '<Leader>o', cmd('Lspsaga outline'), opts(silent, noremap, 'Outline') },
   { '<Leader>dw', cmd('Lspsaga show_workspace_diagnostics'), opts(silent, noremap, 'Workspace Diagnostics') },
-  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'),       opts(silent, noremap, 'Buffer Diagnostics') },
+  { '<Leader>db', cmd('Lspsaga show_buf_diagnostics'), opts(silent, noremap, 'Buffer Diagnostics') },
 })
 xmap({
   'ga',
@@ -126,9 +126,19 @@ nmap({ '<leader>gg', cmd('Lazygit'), opts(silent, noremap, 'Lazygit') })
 -------------------------------------------------------------------------------
 
 nmap({
-  { '<leader>fg',      cmd('Telescope live_grep'),  opts(noremap, 'Live Grep') },
-  { '<leader><space>', cmd('Telescope live_grep'),  opts(noremap, 'Live Grep') },
+  { '<leader>fg', cmd('Telescope live_grep'), opts(noremap, 'Live Grep') },
+  { '<leader><space>', cmd('Telescope live_grep'), opts(noremap, 'Live Grep') },
 
-  { '<leader>ff',      cmd('Telescope find_files'), opts(noremap, 'Find Files') },
-  { '<leader>fb',      cmd('Telescope buffers'),    opts(noremap, 'Buffers') },
+  { '<leader>ff', cmd('Telescope find_files'), opts(noremap, 'Find Files') },
+  { '<leader>fb', cmd('Telescope buffers'), opts(noremap, 'Buffers') },
 })
+
+-------------------------------------------------------------------------------
+-- Trouble
+-------------------------------------------------------------------------------
+nmap({ '<leader>t', cmd('TodoTrouble'), opts(silent, noremap, 'Todos (Trouble)') })
+
+-------------------------------------------------------------------------------
+-- Trouble
+-------------------------------------------------------------------------------
+nmap({ '<leader>x', cmd('TroubleToggle'), opts(silent, noremap, 'Trouble') })

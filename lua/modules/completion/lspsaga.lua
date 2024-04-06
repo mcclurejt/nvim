@@ -104,7 +104,7 @@ return function()
     },
     rename = {
       in_select = true,
-      auto_save = false,
+      auto_save = true,
       project_max_width = 0.5,
       project_max_height = 0.5,
       keys = {

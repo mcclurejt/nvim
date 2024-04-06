@@ -118,18 +118,20 @@ function M.setup()
     },
     actions = {
       open_file = {
+        quit_on_open = true,
         resize_window = true,
+      },
+      remove_file = {
+        close_window = true,
       },
     },
     renderer = {
-      root_folder_label = true,
+      root_folder_label = ':t',
       highlight_git = true,
       highlight_opened_files = 'none',
-
       indent_markers = {
         enable = true,
       },
-
       icons = {
         show = {
           file = true,
@@ -137,7 +139,6 @@ function M.setup()
           folder_arrow = true,
           git = false,
         },
-
         glyphs = nonicons_extension.glyphs,
       },
     },

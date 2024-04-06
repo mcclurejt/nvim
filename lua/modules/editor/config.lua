@@ -7,9 +7,11 @@ function config.nvim_treesitter()
   ---@diagnostic disable-next-line: missing-fields
   require('nvim-treesitter.configs').setup({
     ensure_installed = 'all',
+    auto_install = true,
     ignore_install = { 'phpdoc', 'scfg', 'smali' },
     highlight = {
       enable = true,
+      additional_vim_regex_highlighting = false,
     },
     textobjects = {
       move = {
@@ -28,6 +30,12 @@ function config.nvim_treesitter()
         node_decremental = '<bs>',
       },
     },
+    ident = { enable = true },
+    rainbow = {
+      enable = true,
+      extended_mode = true,
+      max_file_lines = nil,
+    }
   })
 end
 

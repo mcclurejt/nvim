@@ -269,9 +269,9 @@ function config.neo_tree()
     },
     sources = {
       'filesystem',
-      -- 'document_symbols',
+      'document_symbols',
       'buffers',
-      -- 'diagnostics',
+      'diagnostics',
       'git_status',
     },
     source_selector = {
@@ -279,9 +279,9 @@ function config.neo_tree()
       content_layout = 'center',
       sources = {
         { source = 'filesystem' },
-        -- { source = 'document_symbols' },
-        -- { source = 'buffers' },
-        -- { source = 'diagnostics', display_name = ' Diagnostics' },
+        { source = 'document_symbols' },
+        { source = 'buffers' },
+        { source = 'diagnostics', display_name = ' Diagnostics' },
         { source = 'git_status' },
       },
     },
