@@ -2,6 +2,7 @@ local M = {}
 
 M.setup = function()
   local telescope = require('telescope')
+  local icons = require('nvim-nonicons')
   telescope.setup({
     defaults = {
       vimgrep_arguments = {
@@ -14,9 +15,9 @@ M.setup = function()
         '--column',
         '--smart-case',
       },
-      prompt_prefix = '   ',
-      selection_caret = '  ',
-      entry_prefix = '  ',
+      prompt_prefix = '  ' .. icons.get('telescope') .. '  ',
+      selection_caret = ' ❯ ',
+      entry_prefix = '   ',
       initial_mode = 'insert',
       selection_strategy = 'reset',
       sorting_strategy = 'ascending',
@@ -24,14 +25,14 @@ M.setup = function()
       layout_config = {
         horizontal = {
           prompt_position = 'top',
-          preview_width = 0.55,
-          results_width = 0.8,
+          preview_width = 0.4,
+          results_width = 0.2,
         },
         vertical = {
           mirror = false,
         },
-        width = 0.87,
-        height = 0.80,
+        width = 0.6,
+        height = 0.60,
         preview_cutoff = 120,
       },
       file_sorter = require('telescope.sorters').get_fuzzy_file,
@@ -50,6 +51,10 @@ M.setup = function()
       -- buffer_previewer_maker = require('telescope.previewers').buffer_previewer_maker,
       mappings = {
         n = { ['q'] = require('telescope.actions').close },
+        i = {
+          ['<C-j>'] = require('telescope.actions').move_selection_next,
+          ['<C-k>'] = require('telescope.actions').move_selection_previous,
+        },
       },
     },
   })

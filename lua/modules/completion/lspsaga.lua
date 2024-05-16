@@ -10,15 +10,15 @@ return function()
       code_action = '💡',
       actionfix = ' ',
       lines = { '┗', '┣', '┃', '━', '┏' },
-      -- kind = require('catppuccin.groups.integrations.lsp_saga').custom_kind(),
-      kind = nil,
+      kind = require('catppuccin.groups.integrations.lsp_saga').custom_kind(),
+      -- kind = nil,
       imp_sign = '󰳛 ',
     },
     hover = {
       max_width = 0.9,
       max_height = 0.8,
-      open_link = 'gx',
-      open_cmd = '!chrome',
+      open_link = '<CR>',
+      open_cmd = '!arc',
     },
     diagnostic = {
       show_code_action = true,
@@ -32,7 +32,7 @@ return function()
       text_hl_follow = true,
       border_follow = true,
       wrap_long_lines = true,
-      extend_relatedInformation = false,
+      extend_relatedInformation = true,
       diagnostic_only_current = false,
       keys = {
         exec_action = 'o',
@@ -44,7 +44,7 @@ return function()
     code_action = {
       num_shortcut = true,
       show_server_name = false,
-      extend_gitsigns = false,
+      extend_gitsigns = true,
       only_in_cursor = true,
       max_height = 0.3,
       keys = {
@@ -61,8 +61,8 @@ return function()
       enable_in_insert = true,
     },
     scroll_preview = {
-      scroll_down = '<C-f>',
-      scroll_up = '<C-b>',
+      scroll_down = '<C-d>',
+      scroll_up = '<C-u>',
     },
     request_timeout = 2000,
     finder = {

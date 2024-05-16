@@ -1,109 +1,146 @@
 local package = require('core.pack').package
 
 package({
-  "mrcjkb/rustaceanvim",
-  version = '^4', -- Recommended
-  ft = { "rust" },
-  -- opts = {
-  --   server = {
-  --     on_attach = function(client, bufnr)
-  --       -- register which-key mappings
-  --       local wk = require("which-key")
-  --       wk.register({
-  --         ["<leader>cR"] = { function() vim.cmd.RustLsp("codeAction") end, "Code Action" },
-  --         ["<leader>dr"] = { function() vim.cmd.RustLsp("debuggables") end, "Rust debuggables" },
-  --       }, { mode = "n", buffer = bufnr })
-  --     end,
-  --     default_settings = {
-  --       -- rust-analyzer language server configuration
-  --       ["rust-analyzer"] = {
-  --         cargo = {
-  --           allFeatures = true,
-  --           loadOutDirsFromCheck = true,
-  --           runBuildScripts = true,
-  --         },
-  --         -- Add clippy lints for Rust.
-  --         checkOnSave = {
-  --           allFeatures = true,
-  --           command = "clippy",
-  --           extraArgs = { "--no-deps" },
-  --         },
-  --         procMacro = {
-  --           enable = true,
-  --           ignored = {
-  --             ["async-trait"] = { "async_trait" },
-  --             ["napi-derive"] = { "napi" },
-  --             ["async-recursion"] = { "async_recursion" },
-  --           },
-  --         },
-  --       },
-  --     },
-  --   }
-  -- },
-  -- config = function(_, opts)
-  --   vim.g.rustaceanvim = vim.tbl_deep_extend("force",
-  --     {},
-  --     opts or {})
-  -- end
-})
-
-package({
-  'neovim/nvim-lspconfig',
-  event = 'BufReadPre',
-  dependencies = {
-    'folke/neodev.nvim',
-    'williamboman/mason.nvim',
-    'williamboman/mason-lspconfig.nvim',
-    'lewis6991/gitsigns.nvim',
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-    'nvim-lua/lsp-status.nvim',
-  },
-  config = function()
-    require('modules.completion.lspconfig')
-  end,
-})
-
-package({
-  'L3MON4D3/LuaSnip',
-  event = 'InsertCharPre',
-  dependencies = {
-    { 'rafamadriz/friendly-snippets' },
-  },
-  config = function()
-    local ls = require('luasnip')
-    local types = require('luasnip.util.types')
-    ls.config.set_config({
-      history = true,
-      enable_autosnippets = true,
-      updateevents = 'TextChanged,TextChangedI',
-      ext_opts = {
-        [types.choiceNode] = {
-          active = {
-            virt_text = { { '<- choiceNode', 'Comment' } },
+  {
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v3.x',
+    config = function()
+      require('modules.completion.lsp-zero')
+    end,
+    dependencies = {
+      { 'williamboman/mason.nvim' },
+      { 'williamboman/mason-lspconfig.nvim' },
+      {
+        'neovim/nvim-lspconfig',
+        dependencies = {
+          {
+            'SmiteshP/nvim-navbuddy',
+            dependencies = {
+              {
+                'SmiteshP/nvim-navic',
+                config = function()
+                  -- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+                  require('nvim-navic').setup({})
+                end,
+              },
+              'MunifTanjim/nui.nvim',
+            },
+            opts = { lsp = { auto_attach = true } },
           },
         },
       },
-    })
-    require('luasnip.loaders.from_lua').lazy_load({ paths = vim.fn.stdpath('config') .. '/snippets' })
-    require('luasnip.loaders.from_vscode').lazy_load()
-    require('luasnip.loaders.from_vscode').lazy_load({
-      paths = { './snippets/' },
-    })
-  end,
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/nvim-cmp' },
+      { 'L3MON4D3/LuaSnip' },
+      -- {
+      --   'kevinhwang91/nvim-ufo',
+      --   dependencies = {
+      --     'kevinhwang91/promise-async',
+      --   },
+      --   config = function()
+      --     require('ufo').setup({
+      --       -- provider_selector = function(bufnr, filetype, buftype)
+      --       --   return { 'treesitter', 'indent' }
+      --       -- end,
+      --       -- close_fold_kinds_for_ft = {
+      --       --   default = { 'imports', 'comment' },
+      --       -- },
+      --       fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+      --         local hlgroup = 'NonText'
+      --         local newVirtText = {}
+      --         local suffix = '   ' .. tostring(endLnum - lnum)
+      --         local sufWidth = vim.fn.strdisplaywidth(suffix)
+      --         local targetWidth = width - sufWidth
+      --         local curWidth = 0
+      --         for _, chunk in ipairs(virtText) do
+      --           local chunkText = chunk[1]
+      --           local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      --           if targetWidth > curWidth + chunkWidth then
+      --             table.insert(newVirtText, chunk)
+      --           else
+      --             chunkText = truncate(chunkText, targetWidth - curWidth)
+      --             local hlGroup = chunk[2]
+      --             table.insert(newVirtText, { chunkText, hlGroup })
+      --             chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      --             if curWidth + chunkWidth < targetWidth then
+      --               suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+      --             end
+      --             break
+      --           end
+      --           curWidth = curWidth + chunkWidth
+      --         end
+      --         table.insert(newVirtText, { suffix, hlgroup })
+      --         return newVirtText
+      --       end,
+      --     })
+      --   end,
+      -- },
+    },
+  },
 })
 
 package({
-  'nvimdev/lspsaga.nvim',
-  event = 'LspAttach',
-  config = require('modules.completion.lspsaga'),
+  'stevearc/conform.nvim',
+  dependencies = {
+    'mason.nvim',
+  },
+  config = function()
+    local conf = require('conform')
+    conf.setup({
+      -- Map of filetype to formatters
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        -- Conform will run multiple formatters sequentially
+        go = { 'goimports', 'gofmt' },
+        -- Use a sub-list to run only the first available formatter
+        javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier' } },
+        -- You can use a function here to determine the formatters dynamically
+        python = function(bufnr)
+          if require('conform').get_formatter_info('ruff_format', bufnr).available then
+            return { 'ruff_format' }
+          else
+            return { 'isort', 'black' }
+          end
+        end,
+        -- Use the "_" filetype to run formatters on filetypes that don't
+        -- have other formatters configured.
+        ['_'] = { 'trim_whitespace' },
+      },
+      -- If this is set, Conform will run the formatter on save.
+      -- It will pass the table to conform.format().
+      -- This can also be a function that returns the table.
+      format_on_save = {
+        -- I recommend these options. See :help conform.format for details.
+        lsp_fallback = false,
+        timeout_ms = 5000,
+      },
+      -- If this is set, Conform will run the formatter asynchronously after save.
+      -- It will pass the table to conform.format().
+      -- This can also be a function that returns the table.
+      format_after_save = {
+        lsp_fallback = false,
+      },
+      -- Set the log level. Use `:ConformInfo` to see the location of the log file.
+      log_level = vim.log.levels.ERROR,
+      -- Conform will notify you when a formatter errors
+      notify_on_error = true,
+      -- Custom formatters and changes to built-in formatters
+    })
+  end,
 })
 
 package({
   'windwp/nvim-autopairs',
   event = 'InsertEnter',
-  config = function()
-    require('nvim-autopairs').setup({})
-  end,
+  config = true,
+  -- use opts = {} for passing setup options
+  -- this is equalent to setup({}) function
+})
+
+package({
+  'nvimdev/lspsaga.nvim',
+  config = require('modules.completion.lspsaga'),
 })
 
 package({
@@ -199,6 +236,7 @@ package({
         completion = {
           side_padding = 1,
           -- winhighlight = 'Normal:CmpPmenu,CursorLine:CmpSel,Search:None',
+          winhighlight = 'Normal:CmpPmenu',
           scrollbar = false,
           border = border('CmpBorder'),
         },
@@ -213,9 +251,9 @@ package({
         format = function(entry, item)
           local icon = lspkind_icons[item.kind] or ''
           icon = ' ' .. icon .. ' '
-          item.menu = require('lspkind').cmp_format({ mode = 'symbol_text', maxwidth = 50 })(entry, item)
+          item.menu = require('lspkind').cmp_format({ mode = 'symbol_text', maxwidth = 60 })(entry, item)
               and '   (' .. item.kind .. ')'
-              or ''
+            or ''
           item.kind = icon
           return item
         end,
@@ -250,7 +288,7 @@ package({
         }),
 
         -- scrolling docs
-        ['<C-u>'] = cmp.mapping({
+        ['<C-b>'] = cmp.mapping({
           c = function(fallback)
             if cmp.visible() then
               return cmp.scroll_docs(-4)
@@ -259,7 +297,7 @@ package({
             fallback()
           end,
         }),
-        ['<C-d>'] = cmp.mapping({
+        ['<C-f>'] = cmp.mapping({
           c = function(fallback)
             if cmp.visible() then
               return cmp.scroll_docs(4)
@@ -298,57 +336,42 @@ package({
       },
     })
     cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
-
-    -- -- null-ls
-    -- local null_ls = require('null-ls')
-    -- null_ls.setup({
-    --   sources = {
-    --     null_ls.builtins.completion.spell.with({
-    --       filetypes = { 'markdown', 'text' },
-    --     }),
-    --     null_ls.builtins.formatting.stylua,
-    --     null_ls.builtins.code_actions.gitsigns,
-    --     null_ls.builtins.hover.dictionary,
-    --     null_ls.builtins.hover.printenv,
-    --     null_ls.builtins.formatting.codespell
-    --   },
-    -- })
   end,
 })
 
-package({
-  'nvimdev/guard.nvim',
-  dependencies = {
-    'nvimdev/guard-collection',
-  },
-  config = function()
-    local ft = require('guard.filetype')
-    local lint = require('guard.lint')
+-- package({
+--   'nvimdev/guard.nvim',
+--   dependencies = {
+--     'nvimdev/guard-collection',
+--   },
+--   config = function()
+--     local ft = require('guard.filetype')
+--     local lint = require('guard.lint')
 
-    -- Typescript
-    ft('typescript,javascript,typescriptreact'):fmt('prettier')
+--     -- Typescript
+--     ft('typescript,javascript,typescriptreact'):fmt('prettier')
 
-    -- Lua
-    ft('lua'):fmt('lsp'):append('stylua')
+--     -- Lua
+--     ft('lua'):fmt('lsp'):append('stylua')
 
-    -- Rust
-    ft('rust'):fmt('rustfmt')
+--     -- Rust
+--     ft('rust'):fmt('rustfmt')
 
-    -- SQL
-    -- cargo install sleek
-    ft('sql'):fmt({
-      cmd = 'sleek',
-      stdin = true,
-    })
+--     -- SQL
+--     -- cargo install sleek
+--     ft('sql'):fmt({
+--       cmd = 'sleek',
+--       stdin = true,
+--     })
 
-    -- Shell
-    ft('sh'):fmt('shfmt')
+--     -- Shell
+--     ft('sh'):fmt('shfmt')
 
-    require('guard').setup({
-      fmt_on_save = true,
-      lsp_as_default_formatter = true
-    })
-  end,
-})
+--     require('guard').setup({
+--       fmt_on_save = true,
+--       lsp_as_default_formatter = false,
+--     })
+--   end,
+-- })
 
 -- TODO: Fix tsserver crashes

@@ -32,16 +32,15 @@ end
 opt.completeopt = 'menu,menuone,noselect'
 opt.showmode = false
 opt.shortmess = 'aoOTIcF'
-opt.scrolloff = 5
+opt.scrolloff = 1000
 opt.sidescrolloff = 10
 opt.ruler = false
-opt.showtabline = 0
 opt.winwidth = 30
 opt.pumheight = 15
 opt.showcmd = false
 
 opt.cmdheight = 0
-opt.laststatus = 2
+opt.laststatus = 3
 opt.list = true
 opt.listchars = 'tab:»·,nbsp:+,trail:·,extends:→,precedes:←'
 opt.pumblend = 10
@@ -60,12 +59,19 @@ opt.whichwrap = 'h,l,<,>,[,],~'
 opt.breakindentopt = 'shift:2,min:20'
 opt.showbreak = '↳ '
 
+-- fold
+opt.foldcolumn = '0'
+opt.foldlevel = 99
 opt.foldlevelstart = 99
-opt.foldmethod = 'marker'
+opt.foldenable = true
+-- vim.opt.foldtext = 'v:lua.vim.treesitter.foldtext()'
 
 opt.number = true
--- opt.signcolumn = 'yes:1'
+-- opt.signcolumn = 'yes'
 opt.spelloptions = 'camel'
+
+-- sessions
+vim.o.sessionoptions = 'blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions,globals'
 
 opt.textwidth = 100
 opt.colorcolumn = ''
@@ -90,29 +96,66 @@ end
 opt.winbl = 0
 
 -- fix nvim-tree restore from session
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'NvimTree' },
-  callback = function(args)
-    vim.api.nvim_create_autocmd('VimLeavePre', {
-      callback = function()
-        vim.api.nvim_buf_delete(args.buf, { force = true })
-        return true
-      end,
-    })
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = { 'NvimTree' },
+--   callback = function(args)
+--     vim.api.nvim_create_autocmd('VimLeavePre', {
+--       callback = function()
+--         vim.api.nvim_buf_delete(args.buf, { force = true })
+--         return true
+--       end,
+--     })
+--   end,
+-- })
 -- vim.api.nvim_create_autocmd({ 'BufEnter' }, {
 --   pattern = 'NvimTree*',
 --   callback = function()
 --     local view = require('nvim-tree.view')
 --     local is_visible = view.is_visible()
-
 --     local api = require('nvim-tree.api')
 --     if not is_visible then
 --       api.tree.open()
 --     end
 --   end,
 -- })
+
+-- automatically set fold method
+vim.api.nvim_create_autocmd({ 'FileType' }, {
+  callback = function()
+    if require('nvim-treesitter.parsers').has_parser() then
+      vim.opt.foldmethod = 'expr'
+      vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'
+    else
+      vim.opt.foldmethod = 'syntax'
+    end
+  end,
+})
+function MyDeleteView()
+  local path = vim.fn.fnamemodify(vim.fn.bufname('%'), ':p')
+  -- vim's odd =~ escaping for /
+  path = vim.fn.substitute(path, '=', '==', 'g')
+  if vim.fn.has_key(vim.fn.environ(), 'HOME') then
+    path = vim.fn.substitute(path, '^' .. os.getenv('HOME'), '\\~', '')
+  end
+  path = vim.fn.substitute(path, '/', '=+', 'g') .. '='
+  -- view directory
+  path = vim.opt.viewdir:get() .. path
+  vim.fn.delete(path)
+  print('Deleted: ' .. path)
+end
+
+function FixFolds()
+  vim.cmd([[
+        augroup remember_folds
+          autocmd!
+        augroup END
+    ]])
+  MyDeleteView()
+  print('Close and reopen nvim for folds to work on this file again')
+end
+
+vim.api.nvim_create_user_command('FixFolds', FixFolds, {})
+vim.api.nvim_create_user_command('Delview', MyDeleteView, {})
 
 -- automatically resize the nvimtree when neovim's window size changes
 local tree_api = require('nvim-tree')
@@ -129,6 +172,18 @@ vim.api.nvim_create_autocmd({ 'VimResized' }, {
       tree_view.close()
       tree_api.open()
     end
+  end,
+})
+
+-- themed feline
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    package.loaded['feline'] = nil
+    package.loaded['catppuccin.groups.integrations.feline'] = nil
+    require('feline').setup({
+      components = require('catppuccin.groups.integrations.feline').get(),
+    })
   end,
 })
 

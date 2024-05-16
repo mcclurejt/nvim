@@ -36,36 +36,33 @@ function M._attach(client, _)
 end
 
 local servers = {
-  'bashls',               -- bash
-  'bufls',                -- protobuf
-  'clangd',               -- c/c++
-  'codelldb',             -- rust stuffs
+  'bashls', -- bash
+  'bufls', -- protobuf
+  'clangd', -- c/c++
+  'codelldb', -- rust stuffs
   -- 'denols', -- deno
-  'dockerls',             -- docker
+  'dockerls', -- docker
   -- 'eslint', -- ts/js linting
-  'gopls',                -- golang
-  'jsonls',               -- json
+  'gopls', -- golang
+  'jsonls', -- json
   -- 'biome', -- ts/js
-  'jqls',                 -- jq
-  'lua_ls',               -- lua
-  'marksman',             -- markdown
-  'prettierd',            -- ts/js formatting
-  'rust_analyzer',        -- rust
-  'spectral',             -- openapi
+  'jqls', -- jq
+  'lua_ls', -- lua
+  'marksman', -- markdown
+  'prettierd', -- ts/js formatting
+  'rust_analyzer', -- rust
+  'spectral', -- openapi
   'jedi_language_server', -- python
-  'shfmt',                -- shell
-  'sqlls',                -- sql
-  solidity = {
-    cmd = { 'nomicfoundation-solidity-language-server', '--stdio' },
-    filetypes = { 'solidity' },
-    require('lspconfig.util').root_pattern('foundry.toml'),
-    single_file_support = true,
-  },             -- solidity
-  'stylua',      -- lua
-  'taplo',       -- toml
+  'shfmt', -- shell
+  'sqlls', -- sql
+  'solidity_ls_nomicfoundation',
+  'solhint',
+  'stylua', -- lua
+  'taplo', -- toml
   'terraformls', -- terraform
-  'tsserver',    -- typescript
-  'yamlls',      -- yaml
+  'tsserver', -- typescript
+  'yamlls', -- yaml
+  'zls', -- zig
 }
 
 vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
@@ -75,35 +72,35 @@ vim.lsp.handlers['workspace/diagnostic/refresh'] = function(_, _, ctx)
   return true
 end
 
--- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
---   border = "single",
--- })
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'single',
+})
 -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
 --   border = "single",
 --   focusable = false,
 --   relative = "cursor",
 -- })
 
-require('mason-lspconfig').setup({
-  ensure_installed = servers,
-  handlers = {
-    ['rust_analyzer'] = function() end,
-    function(server)
-      if server == 'rust_analyzer' then
-        return
-      end
-      lspconfig[server].setup({
-        -- handlers = lspstatus.extensions[server].setup(),
-        on_attach = M._attach,
-        capabilities = M.capabilities,
-      })
-    end,
-  },
-})
+-- require('mason-lspconfig').setup({
+--   ensure_installed = servers,
+--   handlers = {
+--     ['rust_analyzer'] = function() end,
+--     function(server)
+--       if server == 'rust_analyzer' then
+--         return
+--       end
+--       lspconfig[server].setup({
+--         -- handlers = lspstatus.extensions[server].setup(),
+--         on_attach = M._attach,
+--         capabilities = M.capabilities,
+--       })
+--     end,
+--   },
+-- })
 
-require('mason-tool-installer').setup({
-  ensure_installed = servers,
-  start_delay = 1000, -- 1 second delay
-})
+-- require('mason-tool-installer').setup({
+--   ensure_installed = servers,
+--   start_delay = 1000, -- 1 second delay
+-- })
 
 return M

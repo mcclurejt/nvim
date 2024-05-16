@@ -50,14 +50,17 @@ end
 function config.catppuccin()
   require('catppuccin').setup({
     dim_inactive = {
-      enabled = true,
+      enabled = false,
     },
+    transparent_background = false,
     term_colors = true,
     integrations = {
       aerial = true,
       alpha = true,
+      barbar = true,
       cmp = true,
       dashboard = true,
+      diffview = true,
       flash = true,
       gitsigns = true,
       headlines = true,
@@ -89,6 +92,7 @@ function config.catppuccin()
         },
       },
       navic = { enabled = true, custom_bg = 'lualine' },
+      neogit = true,
       neotest = true,
       neotree = true,
       nvimtree = true,
@@ -98,46 +102,28 @@ function config.catppuccin()
       telescope = true,
       treesitter = true,
       treesitter_context = true,
+      ufo = true,
       which_key = true,
     },
     custom_highlights = function(colors)
       return {
-        -- NeoTree
-        -- NeoTreeTabActive = {
-        --   fg = colors.blue,
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeTabInactive = {
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeNormal = {
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeNormalNC = {
-        --   bg = colors.mantle,
-        -- },
-        -- NeoTreeFloatBorder = {
-        --   fg = colors.blue,
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeFloatTitle = {
-        --   fg = colors.blue,
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeTabSeparatorActive = {
-        --   fg = colors.base,
-        --   bg = colors.base,
-        -- },
-        -- NeoTreeTabSeparatorInactive = {
-        --   fg = colors.base,
-        --   bg = colors.base,
-        -- },
-
+        TelescopeNormal = {
+          bg = colors.mantle,
+        },
+        -- NvimTree
+        NvimTreeModifiedIcon = {
+          fg = colors.flamingo,
+        },
+        NvimTreeModifiedFolderHL = {
+          fg = colors.flamingo,
+        },
+        NvimTreeModifiedFileHL = {
+          fg = colors.flamingo,
+        },
         -- Enhance float titles
         FloatTitle = {
           fg = colors.text,
         },
-
         -- Noice Cmdline
         NoiceCmdlinePopupTitle = {
           fg = colors.text,
@@ -148,7 +134,6 @@ function config.catppuccin()
         NoiceCmdlinePopupBorder = {
           fg = colors.peach,
         },
-
         -- Noice Search
         NoiceCmdlineIconSearch = {
           fg = colors.mauve,
@@ -275,7 +260,7 @@ function config.neo_tree()
       'git_status',
     },
     source_selector = {
-      winbar = true,
+      winbar = false,
       content_layout = 'center',
       sources = {
         { source = 'filesystem' },
@@ -311,6 +296,7 @@ function config.neo_tree()
         ['i'] = 'focus_preview',
         ['<c-v>'] = 'open_vsplit',
         ['<c-x>'] = 'open_split',
+        ['<cr>'] = 'open_with_window_picker',
       },
       fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
         ['<C-j>'] = 'move_cursor_down',

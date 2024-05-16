@@ -1,5 +1,15 @@
 local M = {}
 
+-- vim vinegar-esque in-place explore/pick
+local function toggle_replace()
+  local api = require('nvim-tree.api')
+  if api.tree.is_visible() then
+    api.tree.close()
+  else
+    api.node.open.replace_tree_buffer()
+  end
+end
+
 local function edit_or_open()
   local api = require('nvim-tree.api')
   local node = api.tree.get_node_under_cursor()
@@ -29,27 +39,31 @@ local function vsplit_preview()
   api.tree.focus()
 end
 
--- vim vinegar-esque in-place explore/pick
-local function toggle_replace()
-  local api = require('nvim-tree.api')
-  if api.tree.is_visible() then
-    api.tree.close()
-  else
-    api.node.open.replace_tree_buffer()
-  end
-end
-
 -- mappings etc...
 local function on_attach(bufnr)
   local api = require('nvim-tree.api')
 
+  -- floatpreview
+  local floatpreview = require('float-preview')
+  local float_close_wrap = floatpreview.close_wrap
+  local Event = api.events.Event
+
+  floatpreview.attach_nvimtree(bufnr)
+
+  api.events.subscribe(Event.TreeClose, function()
+    vim.schedule(function()
+      float_close_wrap(function() end)()
+    end)
+  end)
+
   local function opts(desc)
     return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
-
   api.config.mappings.default_on_attach(bufnr)
 
-  vim.keymap.del('n', '-', { buffer = bufnr })
+  -- this allows float preview to not throw errors on exit
+  vim.keymap.set('n', '-', float_close_wrap(api.tree.close), opts('Close'))
+  vim.keymap.set('n', 'q', float_close_wrap(api.tree.close), opts('Close'))
 
   -- halp
   vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
@@ -62,7 +76,9 @@ end
 
 -- plugin setup
 function M.setup()
-  local WIDTH_RATIO = 0.5
+  vim.opt.termguicolors = true
+
+  local WIDTH_RATIO = 0.4
   local HEIGHT_RATIO = 0.8
 
   local nonicons_extension = require('nvim-nonicons.extentions.nvim-tree')
@@ -77,7 +93,7 @@ function M.setup()
     disable_netrw = true,
     hijack_netrw = true,
     hijack_cursor = true,
-    hijack_unnamed_buffer_when_opening = false,
+    hijack_unnamed_buffer_when_opening = true,
     sync_root_with_cwd = true,
     update_focused_file = {
       enable = true,
@@ -93,21 +109,22 @@ function M.setup()
           local window_h = screen_h * HEIGHT_RATIO
           local window_w_int = math.floor(window_w)
           local window_h_int = math.floor(window_h)
-          local center_x = (screen_w - window_w) / 2
+          local center_x = (screen_w - window_w) / 8
           local center_y = ((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get()
           return {
             border = 'rounded',
             relative = 'editor',
             row = center_y,
+            -- row = 0,
             col = center_x,
             width = window_w_int,
             height = window_h_int,
           }
         end,
       },
-      width = function()
-        return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
-      end,
+    },
+    modified = {
+      enable = true,
     },
     git = {
       enable = true,
@@ -119,7 +136,16 @@ function M.setup()
     actions = {
       open_file = {
         quit_on_open = true,
-        resize_window = true,
+        resize_window = false,
+        window_picker = {
+          enable = true,
+          picker = 'default',
+          chars = 'ASDFGHJKL',
+          exclude = {
+            filetype = { 'notify', 'lazy', 'qf', 'diff', 'fugitive', 'fugitiveblame', 'trouble' },
+            buftype = { 'nofile', 'terminal', 'help' },
+          },
+        },
       },
       remove_file = {
         close_window = true,
@@ -128,7 +154,7 @@ function M.setup()
     renderer = {
       root_folder_label = ':t',
       highlight_git = true,
-      highlight_opened_files = 'none',
+      highlight_modified = 'name',
       indent_markers = {
         enable = true,
       },
@@ -138,6 +164,7 @@ function M.setup()
           folder = true,
           folder_arrow = true,
           git = false,
+          modified = true,
         },
         glyphs = nonicons_extension.glyphs,
       },

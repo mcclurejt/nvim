@@ -2,7 +2,7 @@
 -- TODO: disable statusline on inactive windows
 return function()
   local nonicons_icons = require('nvim-nonicons')
-
+  local clrs = require('catppuccin.palettes').get_palette('mocha')
   local conditions = require('heirline.conditions')
   local utils = require('heirline.utils')
 
@@ -24,9 +24,9 @@ return function()
       diag_error = utils.get_highlight('DiagnosticError').fg,
       diag_hint = utils.get_highlight('DiagnosticHint').fg,
       diag_info = utils.get_highlight('DiagnosticInfo').fg,
-      git_del = utils.get_highlight('diffRemoved').fg,
-      git_add = utils.get_highlight('diffAdded').fg,
-      git_change = utils.get_highlight('diffChanged').fg,
+      git_del = utils.get_highlight('GitSignsDelete').fg,
+      git_add = utils.get_highlight('GitSignsAdd').fg,
+      git_change = utils.get_highlight('GitSignsChange').fg,
     }
   end
   require('heirline').load_colors(setup_colors())
@@ -90,8 +90,8 @@ return function()
         ['\19'] = 'pink',
         R = 'orange',
         r = 'orange',
-        ['!'] = 'red',
-        t = 'red',
+        ['!'] = clrs.lavender,
+        t = clrs.lavender,
       },
     },
     -- We can now access the value of mode() that, by now, would have been
@@ -103,7 +103,7 @@ return function()
     -- characters long. Plus a nice Icon.
     provider = function(self)
       -- return '󰣐 %2(' .. self.mode_names[self.mode] .. '%)'
-      return ' ' .. nonicons_icons.get('heart-fill') .. ' '
+      return ' ' .. nonicons_icons.get('heart-fill') .. '  '
     end,
     -- Same goes for the highlight. Now the foreground will change according to the current mode.
     hl = function(self)
@@ -154,7 +154,7 @@ return function()
       if not conditions.is_active() then
         return { fg = 'bright_fg', force = true }
       end
-      return { fg = 'fg', italic = true }
+      return { fg = 'fg' }
     end,
 
     flexible = 2,
@@ -213,7 +213,7 @@ return function()
     hl = function()
       if vim.bo.modified and conditions.is_active() then
         -- use `force` because we need to override the child's hl foreground
-        return { fg = 'orange', bold = true, italic = false, force = true }
+        return { fg = clrs.flamingo, bold = true, italic = false, force = true }
       end
     end,
   }
@@ -224,7 +224,7 @@ return function()
     -- FileIcon,
     utils.insert(FileNameModifer, FileName), -- a new table where FileName is a child of FileNameModifier
     -- FileFlags,
-    { provider = '%<' }                      -- this means that the statusline is cut here when there's not enough space
+    { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
   )
 
   local FileType = {
@@ -613,7 +613,7 @@ return function()
       local tname, _ = vim.api.nvim_buf_get_name(0):gsub('.*:', '')
       return ' ' .. tname
     end,
-    hl = { fg = 'blue', bold = true },
+    hl = { fg = 'bg', bold = true },
   }
 
   ViMode = utils.surround({ '', '' }, function(self)
@@ -667,15 +667,76 @@ return function()
       return conditions.buffer_matches({ buftype = { 'terminal' } })
     end,
 
-    hl = { bg = 'red' },
+    hl = { bg = clrs.lavender, fg = 'bg' },
 
     -- Quickly add a condition to the ViMode to only show it when buffer is active!
     { condition = conditions.is_active, ViMode, Space },
-    FileType,
+    -- FileType,
     Space,
     TerminalName,
     Align,
   }
+
+  local TablineBufnr = {
+    provider = function(self)
+      return tostring(self.bufnr) .. '. '
+    end,
+    hl = 'Comment',
+  }
+
+  local TablineFileName = {
+    provider = function(self)
+      -- self.filename will be defined later, just keep looking at the example!
+      local filename = self.filename
+      filename = filename == '' and '[No Name]' or vim.fn.fnamemodify(filename, ':t')
+      return filename
+    end,
+    hl = function(self)
+      return { bold = self.is_active or self.is_visible, italic = true }
+    end,
+  }
+
+  local TablineFileNameBlock = {
+    init = function(self)
+      self.filename = vim.api.nvim_buf_get_name(self.bufnr)
+    end,
+    hl = function(self)
+      if self.is_active then
+        return 'TabLineSel'
+        -- why not?
+        -- elseif not vim.api.nvim_buf_is_loaded(self.bufnr) then
+        --     return { fg = "gray" }
+      else
+        return 'TabLine'
+      end
+    end,
+    on_click = {
+      callback = function(_, minwid, _, button)
+        if button == 'm' then -- close on mouse middle click
+          vim.schedule(function()
+            vim.api.nvim_buf_delete(minwid, { force = false })
+          end)
+        else
+          vim.api.nvim_win_set_buf(0, minwid)
+        end
+      end,
+      minwid = function(self)
+        return self.bufnr
+      end,
+      name = 'heirline_tabline_buffer_callback',
+    },
+    TablineBufnr,
+    FileIcon, -- turns out the version defined in #crash-course-part-ii-filename-and-friends can be reutilized as is here!
+    TablineFileName,
+  }
+
+  local TablineBufferBlock = utils.surround({ '', '' }, function(self)
+    if self.is_active then
+      return utils.get_highlight('TabLineSel').bg
+    else
+      return utils.get_highlight('TabLine').bg
+    end
+  end, { TablineFileNameBlock })
 
   local StatusLines = {
 
@@ -683,7 +744,7 @@ return function()
       if conditions.is_active() then
         return 'StatusLine'
       else
-        return 'StatusLineNC'
+        return 'StatusLine'
       end
     end,
 
@@ -708,8 +769,8 @@ return function()
         ['\19'] = 'pink',
         R = 'orange',
         r = 'orange',
-        ['!'] = 'red',
-        t = 'red',
+        ['!'] = clrs.lavender,
+        t = clrs.lavender,
       },
       mode_color = function(self)
         local mode = conditions.is_active() and vim.fn.mode() or 'n'
@@ -717,8 +778,16 @@ return function()
       end,
     },
   }
+
+  local BufferLine = utils.make_buflist(
+    TablineBufferBlock,
+    { provider = '', hl = { fg = 'gray' } }, -- left truncation, optional (defaults to "<")
+    { provider = '', hl = { fg = 'gray' } } -- right trunctation, also optional (defaults to ...... yep, ">")
+    -- by the way, open a lot of buffers and try clicking them ;)
+  )
   require('heirline').setup({
     statusline = StatusLines,
+
     opts = {
       -- if the callback returns true, the winbar will be disabled for that window
       -- the args parameter corresponds to the table argument passed to autocommand callbacks. :h nvim_lua_create_autocmd()

@@ -13,14 +13,14 @@ function config.nvim_treesitter()
       enable = true,
       additional_vim_regex_highlighting = false,
     },
-    textobjects = {
-      move = {
-        goto_next_start = { [']f'] = '@function.outer', [']c'] = '@class.outer' },
-        goto_next_end = { [']F'] = '@function.outer', [']C'] = '@class.outer' },
-        goto_previous_start = { ['[f'] = '@function.outer', ['[c'] = '@class.outer' },
-        goto_previous_end = { ['[F'] = '@function.outer', ['[C'] = '@class.outer' },
-      },
-    },
+    -- textobjects = {
+    --   move = {
+    --     goto_next_start = { [']f'] = '@function.outer' },
+    --     goto_next_end = { [']F'] = '@function.outer' },
+    --     goto_previous_start = { ['[f'] = '@function.outer' },
+    --     goto_previous_end = { ['[F'] = '@function.outer' },
+    --   },
+    -- },
     incremental_selection = {
       enable = true,
       keymaps = {
@@ -35,7 +35,7 @@ function config.nvim_treesitter()
       enable = true,
       extended_mode = true,
       max_file_lines = nil,
-    }
+    },
   })
 end
 
