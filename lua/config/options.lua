@@ -5,6 +5,10 @@
 -- dont configure lazygit, mines better
 vim.g.lazygit_config = false
 
+-- better python parser
+vim.g.lazyvim_python_lsp = "basedpyright"
+vim.g.lazyvim_python_ruff = "ruff_lsp"
+
 -- diagnostics
 local sign = function(opts)
   -- See :help sign_define()

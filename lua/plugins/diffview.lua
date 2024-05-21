@@ -99,6 +99,7 @@ return {
           { "n", "-", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry" } },
         },
         file_panel = {
+          { "n", "q", "<Cmd>tabclose<CR>", { desc = "Exit Diffview" } },
           { "n", "<cr>", actions.focus_entry, { desc = "Focus the selected entry" } },
           { "n", "s", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry" } },
           { "n", "cc", "<Cmd>Git commit <bar> wincmd J<CR>", { desc = "Commit staged changes" } },

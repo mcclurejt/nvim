@@ -58,6 +58,7 @@ return {
       { "hrsh7th/cmp-path" },
       { "hrsh7th/cmp-buffer" },
       { "saadparwaiz1/cmp_luasnip" },
+      { "lukas-reineke/cmp-rg" },
     },
     config = function()
       local cmp = require("cmp")
@@ -94,6 +95,7 @@ return {
           { name = "buffer" },
           { name = "nvim_lua" },
           { name = "path" },
+          { name = "rg" },
         },
         window = {
           completion = {

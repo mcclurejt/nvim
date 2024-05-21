@@ -16,7 +16,7 @@ return {
     keys[#keys + 1] = { "gD", "<cmd>Lspsaga goto_definition<cr>", desc = "Goto Definition" }
     keys[#keys + 1] = { "gy", "<cmd>Lspsaga peek_type_definition<cr>", desc = "Peek Type Definition" }
     keys[#keys + 1] = { "gr", "<cmd>Lspsaga rename<cr>", desc = "Rename" }
-    keys[#keys + 1] = { "gh", "<cmd>Lspsaga finder<cr>", desc = "Peek Refs/Impls" }
+    keys[#keys + 1] = { "gm", "<cmd>Lspsaga finder<cr>", desc = "Peek Refs/Impls" }
   end,
   dependencies = {
     "artemave/workspace-diagnostics.nvim",
