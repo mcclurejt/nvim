@@ -78,7 +78,7 @@ return {
   dependencies = {
     {
       "yamatsum/nvim-nonicons",
-      dependencies = { "kyazdani42/nvim-web-devicons" },
+      dependencies = { "nvim-tree/nvim-web-devicons" },
     },
     {
       "JMarkin/nvim-tree.lua-float-preview",
@@ -110,6 +110,7 @@ return {
             local is_text = require("float-preview.utils").is_text(path)
             return size < 5 and is_text
           end,
+          ---@diagnostic disable-next-line: unused-local
           post_open = function(bufnr)
             return true
           end,
@@ -163,7 +164,7 @@ return {
     local WIDTH_RATIO = 0.4
     local HEIGHT_RATIO = 0.8
 
-    local nonicons_extension = require("nvim-nonicons.extentions.nvim-tree")
+    local nonicons = require("nvim-nonicons")
 
     -- automatically resize the nvimtree when neovim's window size changes
     local tree_api = require("nvim-tree")
@@ -199,6 +200,7 @@ return {
         update_root = false,
       },
       view = {
+        signcolumn = "yes",
         float = {
           enable = true,
           open_win_config = function()
@@ -228,6 +230,7 @@ return {
       git = {
         enable = true,
         ignore = true,
+        show_on_open_dirs = false,
       },
       filesystem_watchers = {
         enable = true,
@@ -250,10 +253,14 @@ return {
           close_window = true,
         },
       },
+      live_filter = {
+        prefix = "[FILTER]: ",
+        always_show_folders = false,
+      },
       renderer = {
         root_folder_label = ":t",
-        highlight_git = true,
-        -- highlight_modified = false,
+        highlight_git = "name",
+        highlight_modified = "name",
         indent_markers = {
           enable = true,
         },
@@ -263,9 +270,20 @@ return {
             folder = true,
             folder_arrow = true,
             git = false,
-            modified = true,
+            modified = false,
           },
-          glyphs = nonicons_extension.glyphs,
+          glyphs = {
+            git = {
+              unstaged = nonicons.get("diff-modified"),
+              staged = "",
+              unmerged = nonicons.get("git-merge-queue"),
+              renamed = nonicons.get("diff-renamed"),
+              untracked = nonicons.get("diff-added"),
+              deleted = nonicons.get("diff-removed"),
+              ignored = nonicons.get("diff-ignored"),
+            },
+          },
+          git_placement = "signcolumn",
         },
       },
     })

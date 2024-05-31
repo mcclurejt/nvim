@@ -37,7 +37,7 @@ return {
           border_follow = true,
           wrap_long_lines = true,
           extend_relatedInformation = true,
-          diagnostic_only_current = true,
+          diagnostic_only_current = false,
           keys = {
             exec_action = "o",
             quit = "q",

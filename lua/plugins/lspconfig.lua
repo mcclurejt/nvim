@@ -25,9 +25,44 @@ return {
     diagnostics = {
       underline = true,
       virtual_text = false,
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.HINT] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+        },
+      },
+      update_in_insert = true,
     },
     inlay_hints = {
       enabled = false,
+    },
+  },
+  servers = {
+    vtsls = {
+      settings = {
+        vtsls = {
+          autoUseWorkspaceTsdk = true,
+        },
+      },
+      root_dir = require("lspconfig.util").root_pattern(".git"),
+    },
+    solidity_ls_nomicfoundation = {
+      cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
+      filetypes = { "solidity" },
+      root_dir = require("lspconfig.util").root_pattern(
+        "hardhat.config.js",
+        "hardhat.config.ts",
+        "foundry.toml",
+        "remappings.txt",
+        "truffle.js",
+        "truffle-config.js",
+        "ape-config.yaml",
+        ".git",
+        "package.json"
+      ),
+      single_file_support = true,
     },
   },
 }

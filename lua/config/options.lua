@@ -3,11 +3,21 @@
 -- Add any additional options here
 
 -- dont configure lazygit, mines better
-vim.g.lazygit_config = false
+-- vim.g.lazygit_config = true
 
 -- better python parser
 vim.g.lazyvim_python_lsp = "basedpyright"
 vim.g.lazyvim_python_ruff = "ruff_lsp"
+
+-- no spell checking
+vim.opt.spell = false
+
+-- always tabs
+-- vim.opt.showtabline = 2
+-- vim.opt.laststatus = 3
+
+-- no hscroll w/ trackpad
+vim.opt.mousescroll = "ver:1,hor:0"
 
 -- diagnostics
 local sign = function(opts)
@@ -19,8 +29,8 @@ local sign = function(opts)
   })
 end
 
-sign({ name = "DiagnosticSignError", text = "" })
-sign({ name = "DiagnosticSignWarn", text = "" })
+sign({ name = "DiagnosticSignError", text = "" })
+sign({ name = "DiagnosticSignWarn", text = "" })
 sign({ name = "DiagnosticSignInfo", text = "" })
 sign({ name = "DiagnosticSignHint", text = "" })
 
@@ -29,6 +39,7 @@ vim.diagnostic.config({
   severity_sort = true,
   float = {
     border = "rounded",
+    ---@diagnostic disable-next-line: assign-type-mismatch
     source = "always",
   },
 })

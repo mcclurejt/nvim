@@ -1,8 +1,13 @@
 return {
   "sindrets/diffview.nvim",
+  version = false,
+  keys = {
+    { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview" },
+    { "<leader>gm", "<cmd>DiffviewOpen origin/main...HEAD --imply-local<cr>", desc = "Open Diffview (main)" },
+    { "<leader>gf", "<cmd>DiffviewFileHistory %<cr>", desc = "View File History" },
+  },
   config = function()
     local actions = require("diffview.actions")
-
     require("diffview").setup({
       diff_binaries = false,
       enhanced_diff_hl = false, -- Set up hihglights in the hooks instead
@@ -20,8 +25,8 @@ return {
       },
       view = {
         default = {
-          -- layout = "diff1_inline",
-          winbar_info = false,
+          -- layout = "diff1_plain",
+          winbar_info = true,
         },
         merge_tool = {
           layout = "diff3_mixed",
@@ -151,6 +156,7 @@ return {
         },
         file_history_panel = {
           { "n", "<cr>", actions.focus_entry, { desc = "Focus the selected entry" } },
+          { "n", "q", "<Cmd>tabclose<CR>", { desc = "Exit Diffview" } },
         },
       },
     })

@@ -1,8 +1,8 @@
 return {
   "b0o/incline.nvim",
+  enabled = true,
   dependencies = {
-    "kyazdani42/nvim-web-devicons",
-    "catppuccin/nvim",
+    "nvim-tree/nvim-web-devicons",
   },
   event = "VeryLazy",
   config = function()
@@ -12,13 +12,14 @@ return {
     require("incline").setup({
       window = {
         padding = 0,
-        margin = { horizontal = 2, vertical = 2 },
+        margin = { horizontal = 2, vertical = 0 },
         placement = {
           horizontal = "right",
           vertical = "top",
         },
       },
       hide = {
+        focused_win = true,
         cursorline = true,
       },
       render = function(props)
@@ -29,16 +30,17 @@ return {
         local ft_icon, ft_color = devicons.get_icon_color(filename)
         local modified = vim.bo[props.buf].modified
         return {
-          -- { "", guifg = clrs.surface0, guibg = clrs.base } or "",
-          ft_icon and { " " .. ft_icon .. " ", guibg = ft_color, guifg = clrs.surface0 } or "",
-          guibg = clrs.surface0,
+          "\n",
+          ft_icon and { "", guibg = clrs.base, guifg = ft_color } or "",
+          ft_icon and { "" .. ft_icon .. "", guibg = ft_color, guifg = clrs.base } or "",
+          guibg = ft_color,
+          guifg = clrs.base,
+          gui = "bold",
           {
-            " " .. filename .. " ",
-            gui = modified and "bold" or "regular",
-            guibg = clrs.surface0,
-            guifg = modified and clrs.flamingo or "#cdd6f4",
+            " " .. filename .. "",
+            guibg = ft_color,
           },
-          -- { "", guibg = clrs.base, guifg = clrs.surface0 },
+          { "", guibg = clrs.base, guifg = ft_color },
         }
       end,
     })
