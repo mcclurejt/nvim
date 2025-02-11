@@ -2,8 +2,14 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
--- dont configure lazygit, mines better
--- vim.g.lazygit_config = true
+vim.opt.colorcolumn = "80"
+vim.opt.scrolloff = 999
+
+-- folds
+-- vim.g.lazyvim_statuscolumn.folds_open = true
+-- vim.g.lazyvim_statuscolumn.folds_githl = true
+vim.opt.sol = true
+vim.opt.showtabline = 2
 
 -- better python parser
 vim.g.lazyvim_python_lsp = "basedpyright"
@@ -13,11 +19,14 @@ vim.g.lazyvim_python_ruff = "ruff_lsp"
 vim.opt.spell = false
 
 -- always tabs
--- vim.opt.showtabline = 2
--- vim.opt.laststatus = 3
+vim.opt.laststatus = 3
 
 -- no hscroll w/ trackpad
 vim.opt.mousescroll = "ver:1,hor:0"
+vim.opt.wrap = true
+
+-- no relative number
+vim.opt.relativenumber = false
 
 -- diagnostics
 local sign = function(opts)
@@ -43,3 +52,9 @@ vim.diagnostic.config({
     source = "always",
   },
 })
+
+vim.opt.foldmethod = "expr"
+-- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+-- vim.opt.signcolumn = "no"
+-- vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"

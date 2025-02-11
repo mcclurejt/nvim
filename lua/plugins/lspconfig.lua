@@ -1,68 +1,222 @@
 return {
-  "neovim/nvim-lspconfig",
-  init = function()
-    require("lazyvim.util").lsp.on_attach(function(client, buffer)
-      require("workspace-diagnostics").populate_workspace_diagnostics(client, buffer)
-    end)
-
-    local keys = require("lazyvim.plugins.lsp.keymaps").get()
-    keys[#keys + 1] = { "gx", "<cmd>Lspsaga show_line_diagnostics<cr>", desc = "Line Diagnostics" }
-    -- keys[#keys + 1] = { "<c-space>", "<cmd>lua vim.lsp.buf.omnifunc()<cr>", desc = "Auto-Complete" }
-    keys[#keys + 1] = { "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>", desc = "Next Diagnostic" }
-    keys[#keys + 1] = { "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", desc = "Prev Diagnostic" }
-    keys[#keys + 1] = { "K", "<cmd>Lspsaga hover_doc<cr>", desc = "Hover Docs" }
-    keys[#keys + 1] = { "ga", "<cmd>Lspsaga code_action<cr>", desc = "Code Action" }
-    keys[#keys + 1] = { "gd", "<cmd>Lspsaga peek_definition<cr>", desc = "Peek Definition" }
-    keys[#keys + 1] = { "gD", "<cmd>Lspsaga goto_definition<cr>", desc = "Goto Definition" }
-    keys[#keys + 1] = { "gy", "<cmd>Lspsaga peek_type_definition<cr>", desc = "Peek Type Definition" }
-    keys[#keys + 1] = { "gr", "<cmd>Lspsaga rename<cr>", desc = "Rename" }
-    keys[#keys + 1] = { "gm", "<cmd>Lspsaga finder<cr>", desc = "Peek Refs/Impls" }
-  end,
-  dependencies = {
-    "artemave/workspace-diagnostics.nvim",
-  },
-  opts = {
-    diagnostics = {
-      underline = true,
-      virtual_text = false,
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = " ",
-          [vim.diagnostic.severity.WARN] = " ",
-          [vim.diagnostic.severity.HINT] = " ",
-          [vim.diagnostic.severity.INFO] = " ",
+  {
+    "neovim/nvim-lspconfig",
+    -- init = function()
+    -- require("lazyvim.util").lsp.on_attach(require("workspace-diagnostics").populate_workspace_diagnostics)
+    -- end,
+    enabled = true,
+    dependencies = {
+      "nvimdev/lspsaga.nvim",
+      -- "artemave/workspace-diagnostics.nvim",
+      {
+        "SmiteshP/nvim-navbuddy",
+        dependencies = {
+          {
+            "SmiteshP/nvim-navic",
+            opts = {
+              lsp = {
+                auto_attach = true,
+              },
+            },
+          },
+          "MunifTanjim/nui.nvim",
+        },
+        opts = {
+          highlight = true,
+          lsp = {
+            auto_attach = true,
+          },
+          window = {
+            size = {
+              width = "70%",
+              height = "80%",
+            },
+            border = "rounded",
+            scrolloff = 10,
+            sections = {
+              left = {
+                size = "20%",
+                border = nil, -- You can set border style for each section individually as well.
+              },
+              mid = {
+                size = "30%",
+                border = nil,
+              },
+              right = {
+                -- No size option for right most section. It fills to
+                -- remaining area.
+                border = nil,
+                preview = "always", -- Right section can show previews too.
+                -- Options: "leaf", "always" or "never"
+              },
+            },
+          },
+          source_buffer = {
+            follow_node = false, -- Keep the current node in focus on the source buffer
+            highlight = true, -- Highlight the currently focused node
+            reorient = "smart", -- "smart", "top", "mid" or "none"
+            scrolloff = nil, -- scrolloff value when navbuddy is open
+          },
+        },
+        keys = {
+          { "<leader>o", "<CMD>Navbuddy<CR>", desc = "Document Symbols" },
         },
       },
-      update_in_insert = true,
     },
-    inlay_hints = {
-      enabled = false,
-    },
+    opts = function()
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      keys[#keys + 1] = { "gx", "<cmd>Lspsaga show_line_diagnostics<cr>" }
+      keys[#keys + 1] = { "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>" }
+      keys[#keys + 1] = { "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>" }
+      keys[#keys + 1] = { "K", "<cmd>Lspsaga hover_doc<cr>" }
+      -- keys[#keys + 1] = { "K", vim.lsp.buf.hover }
+      keys[#keys + 1] = { "ga", "<cmd>Lspsaga code_action<cr>" }
+      keys[#keys + 1] = { "gd", "<cmd>Lspsaga peek_definition<cr>" }
+      -- keys[#keys + 1] = { "gd", vim.lsp.buf.definition }
+      keys[#keys + 1] = { "gD", "<cmd>Lspsaga goto_definition<cr>" }
+      keys[#keys + 1] = { "gy", "<cmd>Lspsaga peek_type_definition<cr>" }
+      keys[#keys + 1] = { "gr", "<cmd>Lspsaga rename<cr>", desc = "Lspsaga Rename" }
+      keys[#keys + 1] = { "gm", "<cmd>Lspsaga finder<cr>" }
+    end,
+    -- opts = function()
+    --   local keys = require("lazyvim.plugins.lsp.keymaps").get()
+    --   keys[#keys + 1] = { "gx", "<cmd>Lspsaga show_line_diagnostics<cr>" }
+    --   keys[#keys + 1] = { "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>" }
+    --   keys[#keys + 1] = { "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>" }
+    --   -- keys[#keys + 1] = { "K", "<cmd>Lspsaga hover_doc<cr>" }
+    --   -- keys[#keys + 1] = { "K", vim.lsp.buf.hover }
+    --   keys[#keys + 1] = { "ga", "<cmd>Lspsaga code_action<cr>" }
+    --   keys[#keys + 1] = { "gd", "<cmd>Lspsaga peek_definition<cr>" }
+    --   -- keys[#keys + 1] = { "gd", vim.lsp.buf.definition }
+    --   keys[#keys + 1] = { "gD", "<cmd>Lspsaga goto_definition<cr>" }
+    --   keys[#keys + 1] = { "gy", "<cmd>Lspsaga peek_type_definition<cr>" }
+    --   keys[#keys + 1] = { "gr", "<cmd>Lspsaga rename<cr>", desc = "Lspsaga Rename" }
+    --   keys[#keys + 1] = { "gm", "<cmd>Lspsaga finder<cr>" }
+    --   --   return {
+    --   --     inlay_hints = {
+    --   --       enabled = false,
+    --   --     },
+    --   --     diagnostics = {
+    --   --       virtual_text = false,
+    --   --       signs = {
+    --   --         text = {
+    --   --           [vim.diagnostic.severity.ERROR] = " ",
+    --   --           [vim.diagnostic.severity.WARN] = " ",
+    --   --           [vim.diagnostic.severity.HINT] = " ",
+    --   --           [vim.diagnostic.severity.INFO] = " ",
+    --   --         },
+    --   --       },
+    --   --     },
+    --   --   }
+    -- end,
   },
-  servers = {
-    vtsls = {
-      settings = {
-        vtsls = {
-          autoUseWorkspaceTsdk = true,
+  {
+    "neovim/nvim-lspconfig",
+    -- init = function()
+    --   require("lazyvim.util").lsp.on_attach(require("workspace-diagnostics").populate_workspace_diagnostics)
+    -- end,
+    dependencies = {
+      "nvimdev/lspsaga.nvim",
+    },
+    opts = {
+      inlay_hints = {
+        enabled = false,
+      },
+      diagnostics = {
+        virtual_text = false,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = " ",
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+            [vim.diagnostic.severity.INFO] = " ",
+          },
         },
       },
-      root_dir = require("lspconfig.util").root_pattern(".git"),
+      servers = {
+        -- solidity = {
+        --   mason = false,
+        --   root_pattern = require("lspconfig.util").root_pattern("foundry.toml", ".git"),
+        -- },
+        solidity_ls_nomicfoundation = {
+          capabilities = {
+            completionProvider = {
+              triggerCharacters = { ".", "/", '"', "'", "*" },
+            },
+            signatureHelpProvider = {
+              triggerCharacters = { "(", "," },
+            },
+            definitionProvider = true,
+            typeDefinitionProvider = true,
+            referencesProvider = true,
+            implementationProvider = true,
+            renameProvider = true,
+            codeActionProvider = true,
+            hoverProvider = true,
+            documentFormattingProvider = true,
+            documentSymbolProvider = true,
+            workspace = {
+              workspaceFolders = {
+                supported = true,
+                changeNotifications = true,
+              },
+            },
+          },
+        },
+        -- solidity_ls = {
+        --   capabilities = {
+        --     completionProvider = false,
+        --     signatureHelpProvider = false,
+        --     definitionProvider = false,
+        --     typeDefinitionProvider = false,
+        --     referencesProvider = false,
+        --     implementationProvider = false,
+        --     renameProvider = false,
+        --     codeActionProvider = false,
+        --     hoverProvider = true,
+        --     documentFormattingProvider = false,
+        --     documentSymbolProvider = false,
+        --   },
+        -- },
+      },
     },
-    solidity_ls_nomicfoundation = {
-      cmd = { "nomicfoundation-solidity-language-server", "--stdio" },
-      filetypes = { "solidity" },
-      root_dir = require("lspconfig.util").root_pattern(
-        "hardhat.config.js",
-        "hardhat.config.ts",
-        "foundry.toml",
-        "remappings.txt",
-        "truffle.js",
-        "truffle-config.js",
-        "ape-config.yaml",
-        ".git",
-        "package.json"
-      ),
-      single_file_support = true,
+  },
+  {
+    "williamboman/mason.nvim",
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, { "solhint", "prettierd" })
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        ["javascript"] = { "prettierd" },
+        ["javascriptreact"] = { "prettierd" },
+        ["typescript"] = { "prettierd" },
+        ["typescriptreact"] = { "prettierd" },
+        ["vue"] = { "prettierd" },
+        ["css"] = { "prettierd" },
+        ["scss"] = { "prettierd" },
+        ["less"] = { "prettierd" },
+        ["html"] = { "prettierd" },
+        ["json"] = { "prettierd" },
+        ["jsonc"] = { "prettierd" },
+        ["yaml"] = { "prettierd" },
+        ["markdown"] = { "prettierd" },
+        ["markdown.mdx"] = { "prettierd" },
+        ["graphql"] = { "prettierd" },
+        ["handlebars"] = { "prettierd" },
+        ["solidity"] = { "prettierd" },
+      },
+    },
+  },
+  {
+    "mfussenegger/nvim-lint",
+    opts = {
+      linters_by_ft = {
+        solidity = { "solhint" },
+      },
     },
   },
 }

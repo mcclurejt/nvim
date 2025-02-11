@@ -40,19 +40,26 @@ local lspkind_icons = {
   Codeium = "",
   TabNine = "",
 }
-
 return {
   {
     "onsails/lspkind.nvim",
   },
   {
-    "hrsh7th/nvim-cmp",
+    -- "hrsh7th/nvim-cmp",
+    "iguanacucumber/magazine.nvim",
+    name = "nvim-cmp", -- Otherwise highlighting gets messed up
+    enabled = false,
     dependencies = {
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-path" },
-      { "hrsh7th/cmp-buffer" },
+      -- { "hrsh7th/cmp-nvim-lsp" },
+      -- { "hrsh7th/cmp-path" },
+      -- { "hrsh7th/cmp-buffer" },
+      -- { "hrsh7th/cmp-cmdline" },
+      { "iguanacucumber/mag-nvim-lsp", name = "cmp-nvim-lsp", opts = {} },
+      { "iguanacucumber/mag-nvim-lua", name = "cmp-nvim-lua" },
+      { "iguanacucumber/mag-buffer", name = "cmp-buffer" },
+      { "iguanacucumber/mag-cmdline", name = "cmp-cmdline" },
+      { "hrsh7th/cmp-nvim-lsp-signature-help" },
       { "lukas-reineke/cmp-rg" },
-      { "hrsh7th/cmp-cmdline" },
       {
         "garymjr/nvim-snippets",
         opts = {
@@ -62,6 +69,7 @@ return {
         dependencies = { "rafamadriz/friendly-snippets" },
       },
     },
+    event = { "InsertEnter", "CmdLineEnter" },
     config = function()
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
@@ -90,28 +98,29 @@ return {
         completion = {
           completeopt = "menu,menuone,noinsert",
         },
+        matching = {
+          disallow_fuzzy_matching = false,
+        },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "path" },
+          { name = "nvim_lsp_signature_help" },
           { name = "nvim_lua" },
-          { name = "rg" },
-          { name = "snippets" },
-        }, {
-          { name = "buffer" },
-        }),
+          -- { name = "snippets" },
+          { name = "path" },
+          -- { name = "rg" },
+        }, { { name = "buffer" } }),
         window = {
           completion = {
-            side_padding = 1,
-            -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None",
-            winhighlight = "Normal:CmpPmenu,Search:None",
-            col_offset = -3,
-            -- winhighlight = "Normal:CmpPmenu",
-            scrollbar = false,
-            border = border("CmpBorder"),
+            -- side_padding = 0,
+            --   -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None",
+            --   -- winhighlight = "Normal:Pmenu,Search:None",
+            -- col_offset = -3,
+            --   winhighlight = "Normal:NormalFloat",
+            border = border("FloatBorder"),
+            max_width = 50,
           },
           documentation = {
-            border = border("CmpDocBorder"),
-            winhighlight = "Normal:CmpDoc",
+            border = border("FloatBorder"),
           },
         },
         snippet = {
@@ -125,29 +134,40 @@ return {
         --   format = function(entry, item)
         --     local icon = lspkind_icons[item.kind] or ""
         --     icon = " " .. icon .. " "
-        --     item.menu = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 60 })(entry, item)
-        --         and "   (" .. item.kind .. ")"
-        --       or ""
+        --     item.menu = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 40, show_labelDetails = true })(
+        --       entry,
+        --       item
+        --     ) and "   (" .. item.kind .. ")" or ""
         --     item.kind = icon
         --     return item
         --   end,
         -- },
-        ---@diagnostic disable-next-line: missing-fields
         formatting = {
-          format = function(_, item)
-            local icons = require("lazyvim.config").icons.kinds
-            if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
+          format = function(entry, vim_item)
+            if vim.tbl_contains({ "path" }, entry.source.name) then
+              local icon, hl_group = require("nvim-web-devicons").get_icon(entry:get_completion_item().label)
+              if icon then
+                vim_item.kind = icon
+                vim_item.kind_hl_group = hl_group
+                return vim_item
+              end
             end
-            return item
+            return require("lspkind").cmp_format({ mode = "symbol_text", max_width = 50, show_labelDetails = true })(
+              entry,
+              vim_item
+            )
           end,
         },
         experimental = {
-          ghost_text = {
-            hl_group = "CmpGhostText",
-          },
+          ghost_text = false,
+          native_menu = false,
         },
         sorting = defaults.sorting,
+        view = {
+          docs = {
+            auto_open = true,
+          },
+        },
         -- See :help cmp-mapping
         mapping = {
           -- fire it up
@@ -156,23 +176,45 @@ return {
           ["<Up>"] = cmp.mapping.select_prev_item(select_opts),
           ["<Down>"] = cmp.mapping.select_next_item(select_opts),
           -- for the hardos
-          ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          -- ["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-k>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              return cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            end
+            fallback()
+          end, { "i", "c" }),
+          -- ["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-j>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              return cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            end
+            fallback()
+          end, { "i", "c" }),
           -- scrolling docs
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-          ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+          ["<C-n>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+            else
+              fallback()
+            end
+          end, { "i", "s", "c" }),
+          ["<C-p>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+            else
+              fallback()
+            end
+          end, { "i", "s", "c" }),
           -- hide it if it's irritating
           ["<C-c>"] = cmp.mapping.abort(),
-          ["<ESC>"] = cmp.mapping({
-            i = function(fallback)
-              if cmp.visible() then
-                return cmp.abort()
-              end
-              fallback()
-            end,
-          }),
+          ["<ESC>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              return cmp.abort()
+            end
+            fallback()
+          end, { "i", "s", "c" }),
           ["<CR>"] = LazyVim.cmp.confirm(),
           ["<S-CR>"] = LazyVim.cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
           ["<C-CR>"] = function(fallback)
@@ -182,7 +224,7 @@ return {
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
-              cmp.confirm({ select = true })
+              cmp.confirm({ behavior = cmp.SelectBehavior.Select })
             elseif vim.snippet.active({ direction = 1 }) then
               vim.schedule(function()
                 vim.snippet.jump(1)
@@ -190,7 +232,7 @@ return {
             else
               fallback()
             end
-          end, { "i", "s" }),
+          end, { "i", "s", "c" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
@@ -201,7 +243,7 @@ return {
             else
               fallback()
             end
-          end, { "i", "s" }),
+          end, { "i", "s", "c" }),
         },
       }
 
@@ -218,8 +260,50 @@ return {
         end
         return LazyVim.cmp.snippet_preview(input)
       end
-
       cmp.setup(opts)
+      cmp.setup.cmdline({ "/", "?" }, {
+        mapping = cmp.mapping.preset.cmdline({
+          ["<C-n>"] = cmp.config.disable,
+          ["<C-p>"] = cmp.config.disable,
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
+              cmp.confirm({ behavior = cmp.SelectBehavior.Select })
+            elseif vim.snippet.active({ direction = 1 }) then
+              vim.schedule(function()
+                vim.snippet.jump(1)
+              end)
+            else
+              fallback()
+            end
+          end, { "i", "s", "c" }),
+        }),
+        sources = {
+          { name = "buffer" },
+        },
+      })
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline({
+          ["<C-n>"] = cmp.config.disable,
+          ["<C-p>"] = cmp.config.disable,
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
+              cmp.confirm({ behavior = cmp.SelectBehavior.Select })
+            elseif vim.snippet.active({ direction = 1 }) then
+              vim.schedule(function()
+                vim.snippet.jump(1)
+              end)
+            else
+              fallback()
+            end
+          end, { "i", "s", "c" }),
+        }),
+        sources = {
+          { name = "path" },
+          { name = "cmdline" },
+        },
+      })
       cmp.event:on("confirm_done", function(event)
         if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
           LazyVim.cmp.auto_brackets(event.entry)

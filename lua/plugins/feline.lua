@@ -1,6 +1,7 @@
 return {
   {
     "freddiehaddad/feline.nvim",
+    enabled = false,
     opts = {},
     config = function(_, opts)
       vim.opt.laststatus = 3

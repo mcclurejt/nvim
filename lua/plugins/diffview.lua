@@ -10,7 +10,7 @@ return {
     local actions = require("diffview.actions")
     require("diffview").setup({
       diff_binaries = false,
-      enhanced_diff_hl = false, -- Set up hihglights in the hooks instead
+      enhanced_diff_hl = false, -- Set up highlights in the hooks instead
       git_cmd = { "git" },
       hg_cmd = { "chg" },
       use_icons = true,

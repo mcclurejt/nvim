@@ -122,7 +122,7 @@ return {
           wrap = false,
           trim_height = false,
           open_win_config = function(buf)
-            local WIDTH_RATIO = 0.4
+            local WIDTH_RATIO = 0.3
             local HEIGHT_RATIO = 0.8
             -- calc position of nvimtree main window
             local screen_w = vim.opt.columns:get()
@@ -131,7 +131,7 @@ return {
             local window_h = screen_h * HEIGHT_RATIO
             local window_w_int = math.floor(window_w)
             local window_h_int = math.floor(window_h)
-            local center_x = (screen_w - window_w) * 7 / 8
+            local center_x = (screen_w - window_w) * 6 / 8
             local center_y = ((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get()
             -- return preview window
             return {
@@ -161,7 +161,7 @@ return {
   config = function()
     vim.opt.termguicolors = true
 
-    local WIDTH_RATIO = 0.4
+    local WIDTH_RATIO = 0.3
     local HEIGHT_RATIO = 0.8
 
     local nonicons = require("nvim-nonicons")
@@ -210,7 +210,7 @@ return {
             local window_h = screen_h * HEIGHT_RATIO
             local window_w_int = math.floor(window_w)
             local window_h_int = math.floor(window_h)
-            local center_x = (screen_w - window_w) / 8
+            local center_x = (screen_w - window_w) / 4
             local center_y = ((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get()
             return {
               border = "rounded",
@@ -229,8 +229,7 @@ return {
       },
       git = {
         enable = true,
-        ignore = true,
-        show_on_open_dirs = false,
+        timeout = 1000,
       },
       filesystem_watchers = {
         enable = true,
@@ -241,12 +240,8 @@ return {
           resize_window = false,
           window_picker = {
             enable = true,
-            picker = "default",
-            chars = "ASDFGHJKL",
-            exclude = {
-              filetype = { "notify", "lazy", "qf", "diff", "fugitive", "fugitiveblame", "trouble" },
-              buftype = { "nofile", "terminal", "help" },
-            },
+            chars = "ASDFGHJKL;",
+            -- picker = require("window-picker").pick_window,
           },
         },
         remove_file = {
@@ -268,7 +263,7 @@ return {
           show = {
             file = true,
             folder = true,
-            folder_arrow = true,
+            folder_arrow = false,
             git = false,
             modified = false,
           },

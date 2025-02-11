@@ -1,13 +1,13 @@
 return {
   "lewis6991/gitsigns.nvim",
+  enabled = false,
   opts = {
-    signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
-    numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
-
-    diff_opts = {
-      algorithm = "histogram",
-      internal = true,
-      indent_heuristic = true,
+    signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+    numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
+    linehl = false,
+    word_diff = false,
+    preview_config = {
+      border = "rounded",
     },
     on_attach = function(buffer)
       local gs = package.loaded.gitsigns
@@ -16,6 +16,12 @@ return {
         vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
       end
 
+      map("n", "]c", function()
+        gs.nav_hunk("next")
+      end, "Next Hunk")
+      map("n", "[c", function()
+        gs.nav_hunk("prev")
+      end, "Prev Hunk")
       map("n", "]h", function()
         gs.nav_hunk("next")
       end, "Next Hunk")
@@ -40,6 +46,9 @@ return {
       map("n", "<leader>ghu", gs.undo_stage_hunk, "Undo Stage Hunk")
       map("n", "<leader>ghR", gs.reset_buffer, "Reset Buffer")
       map("n", "<leader>ghp", gs.preview_hunk_inline, "Preview Hunk Inline")
+      map("n", "ghP", gs.preview_hunk_inline, "Preview Hunk Inline")
+      map("n", "<cr>", gs.preview_hunk_inline, "Preview Hunk Inline")
+      map("n", "ghp", gs.preview_hunk, "Preview Hunk Inline")
       map("n", "<leader>ghb", function()
         gs.blame_line({ full = true })
       end, "Blame Line")

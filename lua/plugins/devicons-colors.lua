@@ -21,9 +21,9 @@ return {
     -- end
     require("tiny-devicons-auto-colors").setup({
       colors = mocha,
-      precise_search = {
-        threshold = 50,
-      },
+      -- precise_search = {
+      --   threshold = 50,
+      -- },
     })
   end,
 }

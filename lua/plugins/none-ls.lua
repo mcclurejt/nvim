@@ -1,5 +1,6 @@
 return {
   "nvimtools/none-ls.nvim",
+  enabled = false,
   dependencies = { "mason.nvim", "artemave/workspace-diagnostics.nvim" },
   opts = function(_, opts)
     local nls = require("null-ls")

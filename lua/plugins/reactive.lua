@@ -1,5 +1,6 @@
 return {
   "rasulomaroff/reactive.nvim",
+  enabled = true,
   config = function()
     local colors = require("catppuccin.palettes").get_palette("mocha")
     local blend = require("catppuccin.utils.colors").blend

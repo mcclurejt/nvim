@@ -7,7 +7,7 @@ return {
     {
       "Zeioth/heirline-components.nvim",
       opts = {
-        -- icons = { BufferClose = "" },
+        icons = { TabClose = "" },
       },
     },
     "tiagovla/scope.nvim",
@@ -70,11 +70,11 @@ return {
       end,
       desc = "Buffer Navigate Left",
     },
-    {
-      "gbd",
-      LazyVim.ui.bufremove,
-      desc = "Buffer Delete",
-    },
+    -- {
+    --   "gbd",
+    --   LazyVim.ui.bufremove,
+    --   desc = "Buffer Delete",
+    -- },
   },
   config = function()
     local heirline = require("heirline")
@@ -108,13 +108,13 @@ return {
               local hl = {}
               if self.tab_type == "buffer_active" then
                 hl = {
-                  fg = colors.base,
-                  bg = is_mod and colors.peach or ft_color,
+                  bg = is_mod and colors.peach or colors.lavender,
+                  fg = colors.surface0,
                 }
               elseif self.tab_type == "buffer_visible" then
                 hl = {
-                  fg = colors.base,
-                  bg = invert(is_mod and colors.peach or ft_color),
+                  bg = colors.surface0,
+                  fg = is_mod and colors.peach or colors.lavender,
                 }
               else
                 hl = {
@@ -133,17 +133,19 @@ return {
               ---@diagnostic disable-next-line: unused-local
               local ft_icon, ft_color = devicons.get_icon_color(filename)
               local is_mod = vim.bo[self.bufnr].modified
+              local invert = require("catppuccin.utils.colors").invertColor
               local hl = {}
               if self.tab_type == "buffer_active" then
                 hl = {
-                  fg = is_mod and colors.peach or colors.text,
-                  bg = colors.surface0,
+                  bg = is_mod and colors.peach or colors.lavender,
+                  fg = colors.surface0,
                   bold = true,
                 }
               elseif self.tab_type == "buffer_visible" then
                 hl = {
-                  fg = is_mod and colors.peach or colors.overlay2,
+                  fg = is_mod and colors.peach or colors.lavender,
                   bg = colors.surface0,
+                  bold = true,
                 }
               else
                 hl = {

@@ -3,7 +3,7 @@ return {
   event = "VeryLazy",
   config = function()
     require("nvim-surround").setup({
-      move_cursor = "end",
+      move_cursor = "begin",
       aliases = {
         ["a"] = ">",
         ["b"] = { ")", "}", "]" },
